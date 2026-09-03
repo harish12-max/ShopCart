@@ -1,6 +1,35 @@
+import React, { useState } from "react";
 import "./login.css";
+import {Link, useNavigate } from "react-router-dom"
+import axiosInstance from "../AxiosCall/axios";
 
 function Login() {
+    const [form ,setForm] = useState({email:"",password:""});
+    const [loader , setLoader] = useState("")
+    const [error , setError] = useState(false)
+
+    const navigate = useNavigate()
+
+    const handleChange =(e)=>{
+     setForm((prev) =>({...prev , [e.target.name]:e.target.value}))
+    }
+
+    const handleSubmit =async(e)=>{
+        e.preventDefault()
+        setError("")
+        setLoader(true)
+        
+
+        try {
+         await axiosInstance.post("/user/login" ,form)
+         console.log("User Login")
+         navigate("/home")
+            
+        } catch (error) {
+            console.log(error)
+        }
+       
+    }
   return (
     <div className="login-page">
 
@@ -82,7 +111,10 @@ function Login() {
 
               <input
                 type="email"
+                name="email"
+                value={form.email}
                 placeholder="Enter your Gmail"
+                onChange={handleChange}
               />
 
             </div>
@@ -93,7 +125,10 @@ function Login() {
 
               <input
                 type="password"
+                name="password"
+                value={form.password}
                 placeholder="Enter your password"
+                onChange={handleChange}
               />
 
             </div>
@@ -101,6 +136,7 @@ function Login() {
             <button
               type="submit"
               className="login-btn"
+              onClick={handleSubmit}
             >
               Login
               <span>→</span>
@@ -116,7 +152,7 @@ function Login() {
 
           <p className="bottom-text">
             Don't have an account?
-            <a href="/signup"> Create Account</a>
+            <Link to="/signup"> Create Account</Link>
           </p>
 
         </div>
