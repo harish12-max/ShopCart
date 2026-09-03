@@ -1,0 +1,576 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* =========================
+   MAIN BACKGROUND
+========================= */
+
+.signup-page {
+  min-height: 100vh;
+
+  position: relative;
+  overflow: hidden;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background:
+    radial-gradient(
+      circle at 90% 15%,
+      #39246e 0%,
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 5% 90%,
+      #123e69 0%,
+      transparent 30%
+    ),
+    linear-gradient(
+      135deg,
+      #071526,
+      #0b1d35 50%,
+      #11152e
+    );
+}
+
+/* =========================
+   BACKGROUND GLOW
+========================= */
+
+.signup-glow {
+  position: absolute;
+
+  border-radius: 50%;
+
+  filter: blur(75px);
+
+  opacity: 0.5;
+
+  pointer-events: none;
+}
+
+.signup-blue {
+  width: 250px;
+  height: 250px;
+
+  background: #178dff;
+
+  top: -80px;
+  right: 20%;
+}
+
+.signup-purple {
+  width: 300px;
+  height: 300px;
+
+  background: #8b4dff;
+
+  bottom: -120px;
+  left: 15%;
+}
+
+.signup-cyan {
+  width: 170px;
+  height: 170px;
+
+  background: #00cfff;
+
+  top: 40%;
+  right: -60px;
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.signup-container {
+  width: 1050px;
+
+  min-height: 650px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 80px;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+/* =========================
+   SIGNUP CARD
+========================= */
+
+.signup-card {
+  width: 370px;
+
+  padding: 32px;
+
+  border-radius: 24px;
+
+  /* GLASSMORPHISM */
+
+  background: rgba(255, 255, 255, 0.12);
+
+  backdrop-filter: blur(20px);
+
+  -webkit-backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+
+  box-shadow:
+    0 25px 60px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.2);
+
+  transition: all 0.35s ease;
+}
+
+/* CARD HOVER */
+
+.signup-card:hover {
+  transform: translateY(-6px);
+
+  box-shadow:
+    0 35px 80px rgba(0, 0, 0, 0.45),
+    0 0 40px rgba(91, 111, 255, 0.18),
+    inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+/* =========================
+   SIGNUP ICON
+========================= */
+
+.signup-icon {
+  width: 55px;
+  height: 55px;
+
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 16px;
+
+  background: linear-gradient(
+    135deg,
+    rgba(100, 170, 255, 0.25),
+    rgba(140, 80, 255, 0.25)
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  font-size: 25px;
+
+  margin-bottom: 18px;
+
+  transition: all 0.3s ease;
+}
+
+.signup-icon:hover {
+  transform: rotate(-5deg) scale(1.08);
+
+  box-shadow:
+    0 10px 25px rgba(90, 100, 255, 0.3);
+}
+
+/* =========================
+   CARD TEXT
+========================= */
+
+.signup-card h1 {
+  color: white;
+
+  font-size: 28px;
+
+  margin-bottom: 7px;
+}
+
+.signup-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+
+  font-size: 13px;
+
+  line-height: 1.5;
+
+  margin-bottom: 22px;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+.input-group {
+  margin-bottom: 13px;
+}
+
+.input-group label {
+  display: block;
+
+  color: rgba(255, 255, 255, 0.9);
+
+  font-size: 14px;
+
+  font-weight: bold;
+
+  margin-bottom: 7px;
+}
+
+.input-group input {
+  width: 100%;
+
+  padding: 11px 14px;
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  border-radius: 11px;
+
+  outline: none;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  color: white;
+
+  font-size: 14px;
+
+  backdrop-filter: blur(8px);
+
+  -webkit-backdrop-filter: blur(8px);
+
+  transition: all 0.3s ease;
+}
+
+.input-group input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* INPUT HOVER */
+
+.input-group input:hover {
+  border-color: rgba(120, 170, 255, 0.7);
+
+  background: rgba(255, 255, 255, 0.13);
+
+  transform: translateY(-1px);
+}
+
+/* INPUT FOCUS */
+
+.input-group input:focus {
+  border-color: #6da8ff;
+
+  background: rgba(255, 255, 255, 0.15);
+
+  box-shadow:
+    0 0 0 3px rgba(75, 145, 255, 0.15),
+    0 0 20px rgba(75, 145, 255, 0.15);
+}
+
+/* =========================
+   SIGNUP BUTTON
+========================= */
+
+.signup-btn {
+  width: 100%;
+
+  padding: 13px;
+
+  border: none;
+
+  border-radius: 11px;
+
+  background: linear-gradient(
+    100deg,
+    #6d4aff,
+    #268cff
+  );
+
+  color: white;
+
+  font-size: 15px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 15px;
+
+  margin-top: 7px;
+
+  box-shadow:
+    0 10px 25px rgba(70, 90, 255, 0.35);
+
+  transition: all 0.3s ease;
+}
+
+.signup-btn span {
+  font-size: 20px;
+}
+
+/* BUTTON HOVER */
+
+.signup-btn:hover {
+  transform: translateY(-3px) scale(1.01);
+
+  background: linear-gradient(
+    100deg,
+    #7b5cff,
+    #3298ff
+  );
+
+  box-shadow:
+    0 15px 35px rgba(70, 90, 255, 0.5);
+}
+
+/* BUTTON CLICK */
+
+.signup-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* =========================
+   DIVIDER
+========================= */
+
+.signup-divider {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  margin: 25px 0;
+}
+
+.signup-divider span {
+  height: 1px;
+
+  background: rgba(255, 255, 255, 0.2);
+
+  flex: 1;
+}
+
+.signup-divider p {
+  color: rgba(255, 255, 255, 0.5);
+
+  font-size: 11px;
+}
+
+/* =========================
+   LOGIN TEXT
+========================= */
+
+.login-text {
+  text-align: center;
+
+  color: rgba(255, 255, 255, 0.6);
+
+  font-size: 14px;
+}
+
+.login-text a {
+  color: #63a9ff;
+
+  font-weight: bold;
+
+  text-decoration: none;
+
+  transition: 0.2s;
+}
+
+.login-text a:hover {
+  color: #a678ff;
+}
+
+/* =========================
+   RIGHT SIDE
+========================= */
+
+.signup-right {
+  flex: 1;
+
+  padding: 25px;
+}
+
+/* =========================
+   BRAND
+========================= */
+
+.signup-brand {
+  display: flex;
+
+  align-items: center;
+
+  gap: 12px;
+
+  color: white;
+
+  font-size: 25px;
+
+  font-weight: bold;
+
+  margin-bottom: 80px;
+}
+
+.signup-brand-logo {
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 14px;
+
+  background: linear-gradient(
+    135deg,
+    #7d50ed,
+    #168cff
+  );
+
+  box-shadow:
+    0 10px 30px rgba(100, 80, 255, 0.4);
+
+  transition: 0.3s ease;
+}
+
+.signup-brand-logo:hover {
+  transform: rotate(-6deg) scale(1.08);
+
+  box-shadow:
+    0 15px 35px rgba(100, 80, 255, 0.6);
+}
+
+/* =========================
+   RIGHT CONTENT
+========================= */
+
+.signup-small-title {
+  color: #a979ff;
+
+  font-size: 12px;
+
+  font-weight: bold;
+
+  letter-spacing: 2px;
+
+  margin-bottom: 20px;
+}
+
+.signup-right h2 {
+  color: white;
+
+  font-size: 57px;
+
+  line-height: 1.08;
+
+  margin-bottom: 25px;
+}
+
+.signup-right h2 span {
+  background: linear-gradient(
+    90deg,
+    #b47aff,
+    #3dbaff
+  );
+
+  -webkit-background-clip: text;
+
+  -webkit-text-fill-color: transparent;
+}
+
+.signup-description {
+  max-width: 420px;
+
+  color: #9cb0c8;
+
+  font-size: 16px;
+
+  line-height: 1.7;
+
+  margin-bottom: 30px;
+}
+
+/* =========================
+   TAGS
+========================= */
+
+.signup-tags {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 10px;
+}
+
+.tag {
+  padding: 10px 15px;
+
+  border-radius: 30px;
+
+  color: #d7e5f5;
+
+  background: rgba(255, 255, 255, 0.07);
+
+  border: 1px solid rgba(255, 255, 255, 0.12);
+
+  font-size: 13px;
+
+  backdrop-filter: blur(10px);
+
+  transition: all 0.3s ease;
+
+  cursor: default;
+}
+
+/* TAG HOVER */
+
+.tag:hover {
+  background: rgba(255, 255, 255, 0.14);
+
+  border-color: rgba(100, 170, 255, 0.4);
+
+  transform: translateY(-3px);
+
+  box-shadow:
+    0 8px 20px rgba(50, 120, 255, 0.15);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 900px) {
+
+  .signup-container {
+    width: 90%;
+
+    justify-content: center;
+  }
+
+  .signup-right {
+    display: none;
+  }
+
+  .signup-card {
+    width: 370px;
+
+    max-width: 100%;
+  }
+}
