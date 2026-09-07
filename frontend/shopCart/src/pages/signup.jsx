@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom"
 import axiosInstance from "../AxiosCall/axios";
-import "./signup.css";
+import "../styles/signup.css";
 
 function Signup() {
     const [ form, setForm ] = useState({name:"" ,email:"", password:"", phone:""});
