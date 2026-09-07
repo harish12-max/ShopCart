@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import "./login.css";
 import {Link, useNavigate } from "react-router-dom"
 import axiosInstance from "../AxiosCall/axios";
+import { useAuth } from "../Context/AuthContext";
+
 
 function Login() {
     const [form ,setForm] = useState({email:"",password:""});
     const [loader , setLoader] = useState("")
     const [error , setError] = useState(false)
+    const {setUser} = useAuth()
 
     const navigate = useNavigate()
 
@@ -21,7 +24,8 @@ function Login() {
         
 
         try {
-         await axiosInstance.post("/user/login" ,form)
+       const response= await axiosInstance.post("/user/login" ,form)
+       setUser(response.data)
          console.log("User Login")
          navigate("/home")
             
