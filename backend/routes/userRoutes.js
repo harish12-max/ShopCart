@@ -10,6 +10,4 @@ userRoutes.get("/me", isAuthenticated ,getUser )
 userRoutes.post("/logout" , logoutUser)
 
 
-
-
 export default userRoutes;
