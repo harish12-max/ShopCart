@@ -7,6 +7,7 @@ import Products from "./pages/products";
 import { AuthProvider } from "./Context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
+import ProductDetails from "./pages/productDetails";
 
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
           <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
           <Route path="/products" element={<ProtectedRoute><Products /></ProtectedRoute>} />
+          <Route path="/products/:id" element={<ProtectedRoute><ProductDetails/></ProtectedRoute>} />
 
         </Routes>
       </BrowserRouter>
