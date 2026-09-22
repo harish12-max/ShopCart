@@ -1,487 +1,79 @@
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 .home-page {
-    min-height: 100vh;
-    padding: 0 7%;
-    position: relative;
-    overflow-x: hidden;
-
+    min-height: calc(100vh - 78px); overflow-x: hidden; padding: 0 7%;
     background:
-        radial-gradient(
-            circle at 10% 15%,
-            rgba(79, 70, 229, 0.22),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at 90% 80%,
-            rgba(37, 99, 235, 0.18),
-            transparent 32%
-        ),
-        linear-gradient(
-            135deg,
-            #d9e2f0,
-            #edf2f8
-        );
-
-    color: #111827;
+        radial-gradient(circle at 10% 10%, rgba(31,122,92,.08), transparent 28%),
+        radial-gradient(circle at 90% 80%, rgba(222,216,195,.35), transparent 30%),
+        #f7f5f0;
+    color: #171717;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
-
-
-/* =========================
-   HERO
-========================= */
-
 .home-content {
-    min-height: calc(100vh - 180px);
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 80px;
+    max-width: 1200px; min-height: 590px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between; gap: 70px;
 }
-
-
-/* Hero text */
-
-.hero-text {
-    max-width: 620px;
+.hero-text { flex: 1; }
+.hero-small-text { margin: 0 0 13px; color: #1f7a5c; font-size: 11px; font-weight: 850; letter-spacing: 2px; }
+.hero-text h1 { margin: 0; font-size: clamp(46px,5vw,72px); line-height: .98; letter-spacing: -3px; }
+.hero-text h1 span { color: #1f7a5c; }
+.hero-description { max-width: 520px; margin: 22px 0 0; color: #6b7280; font-size: 16px; line-height: 1.7; }
+.home-page .explore-btn {
+    display: inline-flex; align-items: center; gap: 22px; margin-top: 30px; padding: 14px 19px;
+    border-radius: 11px; background: #171717; color: white; text-decoration: none; font-size: 14px; font-weight: 800;
+    box-shadow: 0 12px 25px rgba(23,23,23,.12); transition: .2s ease;
 }
+.home-page .explore-btn:hover { background: #1f7a5c; transform: translateY(-2px); }
+.explore-arrow { font-size: 19px; transition: transform .2s ease; }
+.home-page .explore-btn:hover .explore-arrow { transform: translateX(5px); }
 
-.hero-small-text {
-    margin-bottom: 18px;
-
-    font-size: 12px;
-    font-weight: 800;
-
-    letter-spacing: 2.5px;
-
-    color: #4f46e5;
-}
-
-.hero-text h1 {
-    margin: 0;
-
-    font-size: clamp(45px, 5vw, 70px);
-
-    line-height: 1.05;
-
-    letter-spacing: -2px;
-
-    font-weight: 800;
-
-    color: #111827;
-}
-
-.hero-text h1 span {
-    background: linear-gradient(
-        90deg,
-        #2563eb,
-        #4f46e5,
-        #7c3aed
-    );
-
-    -webkit-background-clip: text;
-    background-clip: text;
-
-    color: transparent;
-}
-
-.hero-description {
-    max-width: 520px;
-
-    margin: 25px 0 30px;
-
-    font-size: 17px;
-
-    line-height: 1.7;
-
-    color: #475569;
-}
-
-/* =========================
-   EXPLORE PRODUCTS BUTTON
-========================= */
-
-.explore-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 18px;
-
-    width: 100%;
-    padding: 14px 28px;
-
-    border-radius: 11px;
-
-    /* NORMAL BOX COLOR */
-    background: rgba(255, 255, 255, 0.65);
-
-    /* TEXT COLOR */
-    color: #2563eb !important;
-
-    text-decoration: none;
-
-    font-size: 15px;
-    font-weight: 700;
-
-    border: 1px solid rgba(255, 255, 255, 0.9);
-
-    box-shadow:
-        0 6px 18px rgba(37, 99, 235, 0.12);
-
-    cursor: pointer;
-
-    transition:
-        background 0.25s ease,
-        color 0.25s ease,
-        transform 0.25s ease,
-        box-shadow 0.25s ease;
-}
-
-
-/* =========================
-   HOVER
-========================= */
-
-.explore-btn:hover {
-    /* BOX CHANGES COLOR */
-    background: #c7d2fe !important;
-
-    /* TEXT STAYS BLUE */
-    color: #2563eb !important;
-
-    transform: translateY(-3px);
-
-    box-shadow:
-        0 12px 28px rgba(37, 99, 235, 0.25);
-}
-
-
-/* =========================
-   TEXT
-========================= */
-
-.explore-btn span {
-    color: #2563eb !important;
-}
-
-
-/* =========================
-   ARROW
-========================= */
-
-.explore-arrow {
-    color: #2563eb !important;
-
-    font-size: 20px;
-    font-weight: 600;
-
-    transition:
-        transform 0.25s ease;
-}
-
-
-/* =========================
-   ARROW HOVER
-========================= */
-
-.explore-btn:hover .explore-arrow {
-    color: #2563eb !important;
-
-    transform: translateX(6px);
-}
-
-
-/* =========================
-   RIGHT VISUAL
-========================= */
-
-.hero-visual {
-    width: 430px;
-    height: 430px;
-
-    position: relative;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-
-/* Main card */
-
+.hero-visual { position: relative; width: 440px; height: 440px; display: grid; place-items: center; flex-shrink: 0; }
 .main-shopping-card {
-    width: 330px;
-    min-height: 300px;
-
-    padding: 35px;
-
-    border-radius: 25px;
-
-    background: rgba(255, 255, 255, 0.62);
-
-    border: 1px solid rgba(255, 255, 255, 0.75);
-
-    box-shadow:
-        0 25px 55px rgba(30, 41, 59, 0.16);
-
-    backdrop-filter: blur(18px);
-
-    position: relative;
-
-    z-index: 2;
+    position: relative; z-index: 2; width: 335px; min-height: 310px; padding: 34px;
+    border-radius: 24px; background: rgba(255,255,255,.92); border: 1px solid #e5e2da;
+    box-shadow: 0 25px 55px rgba(23,23,23,.10);
 }
-
 .shopping-icon {
-    width: 60px;
-    height: 60px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 17px;
-
-    font-size: 27px;
-
-    background: rgba(99, 102, 241, 0.13);
-
-    margin-bottom: 25px;
+    width: 58px; height: 58px; display: grid; place-items: center; border-radius: 16px;
+    background: #ddefe7; margin-bottom: 24px; font-size: 27px;
 }
-
-.main-shopping-card h2 {
-    margin: 0;
-
-    font-size: 26px;
-
-    line-height: 1.25;
-
-    color: #111827;
+.main-shopping-card h2 { margin: 0; font-size: 26px; line-height: 1.2; letter-spacing: -.7px; }
+.main-shopping-card p { margin: 13px 0 24px; color: #6b7280; font-size: 14px; }
+.card-link { color: #176247; text-decoration: none; font-size: 13px; font-weight: 800; }
+.card-link:hover { text-decoration: underline; }
+.home-page .floating-card {
+    position: absolute; z-index: 3; width: 62px; height: 62px; display: grid; place-items: center;
+    border-radius: 17px; background: white; border: 1px solid #e5e2da; box-shadow: 0 15px 35px rgba(23,23,23,.10);
+    animation: homeFloat 4s ease-in-out infinite;
 }
+.home-page .card-one { top: 20px; left: 15px; }
+.home-page .card-two { top: 95px; right: 0; animation-delay: 1s; }
+.home-page .card-three { bottom: 20px; left: 42px; animation-delay: 2s; }
+@keyframes homeFloat { 50% { transform: translateY(-10px); } }
 
-.main-shopping-card p {
-    margin: 15px 0 25px;
-
-    color: #64748b;
-
-    font-size: 14px;
+.home-page .features {
+    max-width: 1200px; margin: 0 auto; padding: 0 0 55px;
+    display: flex; align-items: center; gap: 50px;
 }
-
-
-/* Card link */
-
-.card-link {
-    text-decoration: none;
-
-    font-size: 14px;
-    font-weight: 700;
-
-    color: #4f46e5;
-
-    transition: color 0.2s ease;
+.home-page .feature { display: flex; align-items: center; gap: 11px; }
+.home-page .feature > span {
+    width: 35px; height: 35px; display: grid; place-items: center; border-radius: 10px;
+    background: white; border: 1px solid #e5e2da; color: #1f7a5c;
 }
-
-.card-link:hover {
-    color: #2563eb;
-}
-
-
-/* =========================
-   FLOATING CARDS
-========================= */
-
-.floating-card {
-    position: absolute;
-
-    width: 65px;
-    height: 65px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 18px;
-
-    font-size: 28px;
-
-    background: rgba(255, 255, 255, 0.78);
-
-    border: 1px solid rgba(255, 255, 255, 0.8);
-
-    box-shadow:
-        0 15px 35px rgba(30, 41, 59, 0.15);
-
-    backdrop-filter: blur(10px);
-
-    z-index: 3;
-
-    animation: float 4s ease-in-out infinite;
-}
-
-.card-one {
-    top: 20px;
-    left: 20px;
-}
-
-.card-two {
-    right: 5px;
-    top: 100px;
-
-    animation-delay: 1s;
-}
-
-.card-three {
-    bottom: 25px;
-    left: 45px;
-
-    animation-delay: 2s;
-}
-
-
-/* Floating animation */
-
-@keyframes float {
-
-    0% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-10px);
-    }
-
-    100% {
-        transform: translateY(0);
-    }
-}
-
-
-/* =========================
-   FEATURES
-========================= */
-
-.features {
-    display: flex;
-
-    align-items: center;
-
-    gap: 55px;
-
-    padding-bottom: 30px;
-}
-
-.feature {
-    display: flex;
-
-    align-items: center;
-
-    gap: 12px;
-}
-
-.feature > span {
-    width: 35px;
-    height: 35px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 10px;
-
-    background: rgba(255, 255, 255, 0.6);
-
-    border: 1px solid rgba(96, 165, 250, 0.35);
-
-    color: #2563eb;
-
-    font-size: 15px;
-}
-
-.feature strong {
-    display: block;
-
-    font-size: 13px;
-
-    color: #334155;
-}
-
-.feature p {
-    margin: 3px 0 0;
-
-    font-size: 11px;
-
-    color: #64748b;
-}
-
-
-/* =========================
-   RESPONSIVE
-========================= */
+.home-page .feature strong { display: block; font-size: 13px; }
+.home-page .feature p { margin: 3px 0 0; color: #6b7280; font-size: 11px; }
 
 @media (max-width: 900px) {
-
-    .home-page {
-        padding: 0 5%;
-    }
-
-    .home-content {
-        flex-direction: column;
-
-        justify-content: center;
-
-        text-align: center;
-
-        padding: 60px 0;
-    }
-
-    .hero-description {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .hero-visual {
-        width: 350px;
-        height: 350px;
-    }
-
-    .features {
-        justify-content: center;
-
-        gap: 25px;
-    }
+    .home-page { padding: 0 5%; }
+    .home-content { min-height: auto; padding: 70px 0; flex-direction: column; text-align: center; }
+    .hero-description { margin-left: auto; margin-right: auto; }
+    .hero-visual { width: 360px; height: 360px; }
+    .home-page .features { justify-content: center; gap: 25px; flex-wrap: wrap; padding-bottom: 40px; }
 }
-
-
 @media (max-width: 600px) {
-
-    .hero-text h1 {
-        font-size: 42px;
-
-        letter-spacing: -1px;
-    }
-
-    .hero-description {
-        font-size: 15px;
-    }
-
-    .hero-visual {
-        width: 300px;
-        height: 300px;
-    }
-
-    .main-shopping-card {
-        width: 270px;
-
-        min-height: 260px;
-
-        padding: 28px;
-    }
-
-    .features {
-        display: none;
-    }
+    .hero-text h1 { font-size: 43px; letter-spacing: -2px; }
+    .hero-description { font-size: 15px; }
+    .hero-visual { width: 300px; height: 300px; }
+    .main-shopping-card { width: 270px; min-height: 255px; padding: 28px; }
+    .home-page .features { display: none; }
 }
