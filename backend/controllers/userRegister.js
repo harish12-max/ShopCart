@@ -6,28 +6,28 @@ const cookieOption = {
   httpOnly: true
 };
 
+const safeUser = (user) => {
+  const data = user.toObject ? user.toObject() : { ...user };
+  delete data.password;
+  return data;
+};
+
 export const userRegister = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body;
 
     if (!name || !email || !password || !phone) {
-      return res.status(400).json({
-        message: "All Fields Required"
-      });
+      return res.status(400).json({ message: "All Fields Required" });
     }
 
     const emailExist = await User.findOne({ email });
 
     if (emailExist) {
-      return res.status(409).json({
-        message: "Email Already Taken"
-      });
+      return res.status(409).json({ message: "Email Already Taken" });
     }
 
     if (password.length <= 8) {
-      return res.status(400).json({
-        message: "Password should be Strong"
-      });
+      return res.status(400).json({ message: "Password should be Strong" });
     }
 
     const hashpassword = await bcrypt.hash(password, 10);
@@ -40,73 +40,54 @@ export const userRegister = async (req, res) => {
     });
 
     const token = gentoken(newUser._id);
-
     res.cookie("token", token, cookieOption);
 
-    return res.status(200).json(newUser);
-
+    return res.status(200).json({
+      message: "Registration Successful",
+      user: safeUser(newUser)
+    });
   } catch (error) {
     console.log(error);
-
-    return res.status(500).json({
-      message: "Internal Server Error"
-    });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
 
 export const userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({
-        message: "All Fields are Required"
-      });
+      return res.status(400).json({ message: "All Fields are Required" });
     }
 
     const emailExist = await User.findOne({ email });
 
     if (!emailExist) {
-      return res.status(404).json({
-        message: "User Not Found"
-      });
+      return res.status(404).json({ message: "User Not Found" });
     }
 
-    const hashpassword = await bcrypt.compare(
-      password,
-      emailExist.password
-    );
+    const hashpassword = await bcrypt.compare(password, emailExist.password);
 
     if (!hashpassword) {
-      return res.status(401).json({
-        message: "Invalid Password"
-      });
+      return res.status(401).json({ message: "Invalid Password" });
     }
 
     const token = gentoken(emailExist._id);
-
     res.cookie("token", token, cookieOption);
 
     return res.status(200).json({
       message: "Login Successful",
-      emailExist
+      user: safeUser(emailExist)
     });
-
   } catch (error) {
     console.log(error);
-
-    return res.status(500).json({
-      message: "Internal Server Error"
-    });
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-
 export const getUser = async (req, res) => {
-  return res.status(200).json(req.user);
+  return res.status(200).json(safeUser(req.user));
 };
-
 
 export const logoutUser = async (req, res) => {
   res.clearCookie("token");
