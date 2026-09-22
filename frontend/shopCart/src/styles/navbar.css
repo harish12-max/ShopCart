@@ -2,6 +2,15 @@
     box-sizing: border-box;
 }
 
+.authenticated-layout {
+    min-height: 100vh;
+}
+
+.authenticated-content {
+    min-height: 100vh;
+    padding-top: 78px;
+}
+
 .app-navbar {
     position: fixed;
     top: 0;
@@ -197,6 +206,10 @@
 }
 
 @media (max-width: 480px) {
+    .authenticated-content {
+        padding-top: 70px;
+    }
+
     .app-navbar {
         min-height: 70px;
     }
