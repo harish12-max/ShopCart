@@ -24,7 +24,7 @@ function Login() {
         
         try {
        const response= await axiosInstance.post("/user/login" ,form)
-       setUser(response.data)
+       setUser(response.data.user)
          console.log("User Login")
          navigate("/home")
             
