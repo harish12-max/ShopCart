@@ -86,6 +86,7 @@ function Signup() {
                             <input
                                 type="email"
                                 name="email"
+                                autoComplete="new-email"
                                 value={form.email}
                                 placeholder="Enter your Gmail"
                                 onChange={handleChange}
@@ -100,6 +101,7 @@ function Signup() {
                             <input
                                 type="password"
                                 name="password"
+                                autoComplete="new-password"
                                 value={form.password}
                                 placeholder="Create your password"
                                 onChange={handleChange}

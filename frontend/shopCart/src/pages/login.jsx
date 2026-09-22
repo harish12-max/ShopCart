@@ -22,7 +22,6 @@ function Login() {
         setError("")
         setLoader(true)
         
-
         try {
        const response= await axiosInstance.post("/user/login" ,form)
        setUser(response.data)
@@ -116,6 +115,7 @@ function Login() {
               <input
                 type="email"
                 name="email"
+                autoComplete="new-email"
                 value={form.email}
                 placeholder="Enter your Gmail"
                 onChange={handleChange}
@@ -130,6 +130,7 @@ function Login() {
               <input
                 type="password"
                 name="password"
+                autoComplete="new-password"
                 value={form.password}
                 placeholder="Enter your password"
                 onChange={handleChange}
