@@ -6,7 +6,7 @@
     min-height: 100vh;
     padding: 0 7%;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
 
     background:
         radial-gradient(
@@ -26,157 +26,6 @@
         );
 
     color: #111827;
-}
-
-
-/* =========================
-   NAVBAR
-========================= */
-
-.home-navbar {
-    height: 82px;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    border-bottom: 1px solid rgba(71, 85, 105, 0.18);
-}
-
-
-/* Left side */
-
-.navbar-left {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-.brand-icon {
-    width: 43px;
-    height: 43px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    border-radius: 12px;
-
-    font-size: 21px;
-
-    background: linear-gradient(
-        135deg,
-        #2563eb,
-        #6366f1
-    );
-
-    box-shadow:
-        0 8px 20px rgba(37, 99, 235, 0.25);
-}
-
-.brand-name {
-    margin-right: 28px;
-
-    font-size: 21px;
-    font-weight: 800;
-
-    color: #111827;
-}
-
-
-/* Home */
-
-.nav-home {
-    padding: 9px 16px;
-
-    border-radius: 9px;
-
-    text-decoration: none;
-
-    font-size: 14px;
-    font-weight: 600;
-
-    color: #4338ca;
-
-    background: rgba(99, 102, 241, 0.13);
-
-    transition: all 0.2s ease;
-}
-
-.nav-home:hover {
-    background: rgba(99, 102, 241, 0.2);
-
-    transform: translateY(-1px);
-}
-
-
-/* Right side */
-
-.navbar-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-
-/* Products */
-
-.nav-products {
-    padding: 9px 15px;
-
-    border-radius: 9px;
-
-    text-decoration: none;
-
-    font-size: 14px;
-    font-weight: 600;
-
-    color: #334155;
-
-    transition: all 0.2s ease;
-}
-
-.nav-products:hover {
-    color: #4338ca;
-
-    background: rgba(99, 102, 241, 0.12);
-
-    transform: translateY(-1px);
-}
-
-
-/* Logout */
-
-.logout-btn {
-    padding: 9px 18px;
-
-    border: 1px solid rgba(71, 85, 105, 0.2);
-
-    border-radius: 9px;
-
-    background: rgba(255, 255, 255, 0.65);
-
-    color: #334155;
-
-    font-size: 14px;
-    font-weight: 600;
-
-    cursor: pointer;
-
-    transition: all 0.2s ease;
-}
-
-.logout-btn:hover {
-    background: #fff;
-
-    color: #dc2626;
-
-    border-color: #fecaca;
-
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 6px 15px rgba(15, 23, 42, 0.08);
 }
 
 
@@ -608,26 +457,6 @@
 
 
 @media (max-width: 600px) {
-
-    .home-navbar {
-        height: 70px;
-    }
-
-    .brand-name {
-        margin-right: 5px;
-    }
-
-    .nav-home {
-        display: none;
-    }
-
-    .nav-products {
-        display: none;
-    }
-
-    .navbar-right {
-        gap: 5px;
-    }
 
     .hero-text h1 {
         font-size: 42px;
