@@ -147,6 +147,52 @@ function Home() {
                 )}
             </section>
 
+            <section className="about-section" id="about">
+                <div className="about-content">
+                    <div className="about-main">
+                        <p className="section-eyebrow">ABOUT SHOPCART</p>
+                        <h2>Simple shopping. Better discovery.</h2>
+                        <p>
+                            ShopCart is a modern e-commerce platform built to make
+                            discovering products simple and convenient. Browse
+                            categories, search for products, and explore details
+                            from one clean shopping experience.
+                        </p>
+                    </div>
+
+                    <div className="about-details">
+                        <div className="about-item">
+                            <span>📍</span>
+                            <div>
+                                <strong>Location</strong>
+                                <p>India</p>
+                            </div>
+                        </div>
+
+                        <div className="about-item">
+                            <span>✉️</span>
+                            <div>
+                                <strong>Contact</strong>
+                                <p>support@shopcart.com</p>
+                            </div>
+                        </div>
+
+                        <div className="about-item">
+                            <span>🛍️</span>
+                            <div>
+                                <strong>Explore</strong>
+                                <p>Products across multiple categories</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="about-bottom">
+                    <span>© 2026 ShopCart. All rights reserved.</span>
+                    <Link to="/products">Start Shopping →</Link>
+                </div>
+            </section>
+
             <section className="features">
                 <div className="feature">
                     <span>✦</span>
