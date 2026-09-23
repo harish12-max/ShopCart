@@ -14,6 +14,6 @@ productRoutes.use(isAuthenticated);
 productRoutes.post("/products", productregister);
 productRoutes.get("/products", getAllProduct);
 productRoutes.get("/products/:id", getProductById);
-productRoutes.get("/product", searchProduct);
+productRoutes.get("/search", searchProduct);
 
 export default productRoutes;

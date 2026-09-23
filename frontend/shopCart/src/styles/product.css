@@ -275,3 +275,20 @@
         grid-template-columns: 1fr;
     }
 }
+
+
+.no-products {
+    width: 100%;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.no-products h2 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.no-products p {
+    font-size: 15px;
+    color: #64748b;
+}

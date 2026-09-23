@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import axiosInstance from "../AxiosCall/axios";
@@ -6,6 +6,7 @@ import "../styles/navbar.css";
 
 function Navbar() {
     const { user, setUser } = useAuth();
+    const [search, setSearch] = useState("")
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -19,6 +20,34 @@ function Navbar() {
             navigate("/login", { replace: true });
         }
     };
+
+
+
+    const handlechange = (e) => {
+        setSearch(e.target.value)
+        //   console.log(e.target.value)
+    }
+
+
+    const handlesubmit = async (e) => {
+        e.preventDefault()
+
+        if (!search.trim()) return;
+
+        try {
+            const response = await axiosInstance.get(`/product/search?search=${encodeURIComponent(search.trim())}`)
+            console.log(response.data)
+            navigate(`/products?search=${encodeURIComponent(search.trim())}`);
+
+
+            if (response.data.prods.length === 0) {
+                console.log("No such product available");
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const profileName =
         user?.name ||
@@ -47,6 +76,23 @@ function Navbar() {
                     Products
                 </Link>
             </div>
+
+
+            <form className="navbar-search" onSubmit={handlesubmit}>
+
+                <input
+                    type="text"
+                    placeholder="Search products..."
+                    name="search"
+                    value={search}
+                    onChange={handlechange}
+                />
+
+                <button type="submit" className="search-button">
+                    <span className="search-icon">⌕</span>
+                </button>
+
+            </form>
 
             <div className="navbar-profile">
                 <div className="profile-info">
