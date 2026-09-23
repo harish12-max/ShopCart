@@ -14,7 +14,7 @@ function ProductDetails() {
         try {
             const response = await axiosInstance.get(`/product/products/${id}`);
 
-            console.log(response.data.prod);
+            // console.log(response.data.prod);
 
             setProduct(response.data.prod);
         } catch (error) {

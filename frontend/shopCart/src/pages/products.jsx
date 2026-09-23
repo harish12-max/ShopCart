@@ -8,14 +8,20 @@ function Products() {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams()
     const searchQuery = searchParams.get("search")
+    const categoryQuery = searchParams.get("category");
 
 
     const fetchProducts = async () => {
         let response;
         try {
 
-            if (searchQuery) {
-                response = await axiosInstance.get(`/product/search?search=${encodeURIComponent(searchQuery)}`);
+            if (searchQuery || categoryQuery) {
+                response = await axiosInstance.get("/product/search", {
+                    params: {
+                        search: searchQuery,
+                        category: categoryQuery
+                    }
+                });
             } else {
                 response = await axiosInstance.get("/product/products");
             }
@@ -27,7 +33,7 @@ function Products() {
 
     useEffect(() => {
         fetchProducts();
-    }, [searchQuery]);
+    }, [searchQuery ,categoryQuery]);
 
     return (
         <div className="products-page">

@@ -35,14 +35,10 @@ function Navbar() {
         if (!search.trim()) return;
 
         try {
-            const response = await axiosInstance.get(`/product/search?search=${encodeURIComponent(search.trim())}`)
-            console.log(response.data)
             navigate(`/products?search=${encodeURIComponent(search.trim())}`);
-
-
-            if (response.data.prods.length === 0) {
-                console.log("No such product available");
-            }
+            // if (response.data.prods.length === 0) {
+            //     console.log("No such product available");
+            // }
 
         } catch (error) {
             console.log(error);

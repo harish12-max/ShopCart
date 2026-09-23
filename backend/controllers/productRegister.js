@@ -80,10 +80,20 @@ export const searchProduct = async (req, res) => {
         const filter = {};
 
         if (search) {
-            filter.name = {
-                $regex: search,
-                $options: "i"
-            };
+            filter.$or = [
+                {
+                    name: {
+                        $regex: search,
+                        $options: "i"
+                    }
+                },
+                {
+                    category: {
+                        $regex: search,
+                        $options: "i"
+                    }
+                }
+            ];
         }
 
         if (category) {
