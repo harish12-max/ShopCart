@@ -71,6 +71,13 @@ function Navbar() {
                 >
                     Products
                 </Link>
+
+                <Link
+                    to="/home#about"
+                    className="nav-link"
+                >
+                    About
+                </Link>
             </div>
 
 
