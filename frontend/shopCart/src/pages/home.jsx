@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axiosInstance from "../AxiosCall/axios";
+import ProductCard from "../components/ProductCard";
 import "../styles/home.css";
 
 const categories = [
@@ -108,36 +109,11 @@ function Home() {
                 {featuredProducts.length > 0 ? (
                     <div className="featured-grid">
                         {featuredProducts.map((product) => (
-                            <div className="featured-card" key={product._id}>
-                                <div className="featured-image-container">
-                                    <img
-                                        src={product.image}
-                                        alt={product.name}
-                                        className="featured-image"
-                                    />
-                                    <span className="featured-category">
-                                        {product.category}
-                                    </span>
-                                </div>
-
-                                <div className="featured-info">
-                                    <h3>{product.name}</h3>
-                                    <p>{product.description}</p>
-
-                                    <div className="featured-bottom">
-                                        <span className="featured-price">
-                                            ₹{product.price}
-                                        </span>
-
-                                        <Link
-                                            to={"/products/" + product._id}
-                                            className="featured-details"
-                                        >
-                                            View Details →
-                                        </Link>
-                                    </div>
-                                </div>
-                            </div>
+                            <ProductCard
+                                key={product._id}
+                                product={product}
+                                variant="featured"
+                            />
                         ))}
                     </div>
                 ) : (
