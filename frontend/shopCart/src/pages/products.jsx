@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../AxiosCall/axios";
 import "../styles/product.css";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import ProductCard from "../components/ProductCard";
+import { useSearchParams } from "react-router-dom";
 
 function Products() {
     const [products, setProducts] = useState([]);
-    const navigate = useNavigate();
-    const [searchParams] = useSearchParams()
-    const searchQuery = searchParams.get("search")
+    const [searchParams] = useSearchParams();
+    const searchQuery = searchParams.get("search");
     const categoryQuery = searchParams.get("category");
-
 
     const fetchProducts = async () => {
         let response;
-        try {
 
+        try {
             if (searchQuery || categoryQuery) {
                 response = await axiosInstance.get("/product/search", {
                     params: {
@@ -25,6 +24,7 @@ function Products() {
             } else {
                 response = await axiosInstance.get("/product/products");
             }
+
             setProducts(response.data.prods);
         } catch (error) {
             console.log(error);
@@ -33,12 +33,10 @@ function Products() {
 
     useEffect(() => {
         fetchProducts();
-    }, [searchQuery ,categoryQuery]);
+    }, [searchQuery, categoryQuery]);
 
     return (
         <div className="products-page">
-
-            {/* Header */}
             <div className="products-header">
                 <div>
                     <p className="products-eyebrow">OUR COLLECTION</p>
@@ -58,7 +56,6 @@ function Products() {
                 </div>
             </div>
 
-            {/* Products */}
             {products.length === 0 ? (
                 <div className="no-products">
                     <h2>No product available</h2>
@@ -66,87 +63,13 @@ function Products() {
                 </div>
             ) : (
                 <div className="products-grid">
-
                     {products.map((product) => (
-                        <div className="product-card" key={product._id}>
-
-                            {/* Image */}
-                            <div className="product-image-container">
-
-                                <img
-                                    src={product.image}
-                                    alt={product.name}
-                                    className="product-image"
-                                />
-
-                                <span className="category-badge">
-                                    {product.category}
-                                </span>
-
-                            </div>
-
-                            {/* Info */}
-                            <div className="product-info">
-
-                                <p className="product-category">
-                                    {product.category}
-                                </p>
-
-                                <h2 className="product-name">
-                                    {product.name}
-                                </h2>
-
-                                <p className="product-description">
-                                    {product.description}
-                                </p>
-
-                                <div className="product-bottom">
-
-                                    <div>
-                                        <p className="price-label">
-                                            Price
-                                        </p>
-
-                                        <p className="product-price">
-                                            ₹{product.price}
-                                        </p>
-                                    </div>
-
-                                    <div className="stock-container">
-
-                                        <span
-                                            className={
-                                                product.stock > 0
-                                                    ? "stock-dot available"
-                                                    : "stock-dot unavailable"
-                                            }
-                                        ></span>
-
-                                        <span className="product-stock">
-                                            {product.stock > 0
-                                                ? `${product.stock} left`
-                                                : "Out of stock"}
-                                        </span>
-
-                                    </div>
-
-                                </div>
-
-                                <button
-                                    className="details-button"
-                                    onClick={() =>
-                                        navigate(`/products/${product._id}`)
-                                    }
-                                >
-                                    <span>View Details</span>
-                                    <span className="arrow">→</span>
-                                </button>
-
-                            </div>
-
-                        </div>
+                        <ProductCard
+                            key={product._id}
+                            product={product}
+                            variant="products"
+                        />
                     ))}
-
                 </div>
             )}
         </div>
