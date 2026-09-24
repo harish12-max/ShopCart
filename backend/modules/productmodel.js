@@ -34,6 +34,7 @@ const productSchema = new mongoose.Schema({
         min: 0
     },
 
+
 },
     {
         timestamps: true

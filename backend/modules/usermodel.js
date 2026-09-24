@@ -21,7 +21,12 @@ const userSchema = new mongoose.Schema({
     },
     ceratedAt: {
         type: Date,
-    }
+    },
+
+    wishList:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"product"
+    }]
 },
     {
         timestamps: true

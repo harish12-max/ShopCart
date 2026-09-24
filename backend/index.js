@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes.js"
 import productRoutes from "./routes/productRoutes.js";
+import wishListRoutes from "./routes/wishListRoutes.js"
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv"
 import cors from "cors"
@@ -33,6 +34,7 @@ app.use(cors({
 
 app.use("/user" , userRoutes)
 app.use("/product" , productRoutes)
+app.use("/wishlist" , wishListRoutes)
 
 
 app.listen(port ,() =>{

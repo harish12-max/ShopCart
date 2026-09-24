@@ -73,10 +73,10 @@ function Navbar() {
                 </Link>
 
                 <Link
-                    to="/home#about"
+                    to="/wishlist"
                     className="nav-link"
                 >
-                    About
+                    wishList
                 </Link>
             </div>
 

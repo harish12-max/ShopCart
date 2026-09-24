@@ -9,6 +9,7 @@ import { AuthProvider } from "./Context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import AuthenticatedLayout from "./components/AuthenticatedLayout";
+import WishList from "./pages/wishList";
 
 function App() {
     return (
@@ -31,6 +32,7 @@ function App() {
                         <Route path="/home" element={<Home />} />
                         <Route path="/products" element={<Products />} />
                         <Route path="/products/:id" element={<ProductDetails />} />
+                        <Route path="/wishlist" element={<WishList />} />
                     </Route>
                 </Routes>
             </BrowserRouter>
