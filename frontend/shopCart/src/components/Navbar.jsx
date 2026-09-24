@@ -21,13 +21,9 @@ function Navbar() {
         }
     };
 
-
-
     const handlechange = (e) => {
         setSearch(e.target.value)
-        //   console.log(e.target.value)
     }
-
 
     const handlesubmit = async (e) => {
         e.preventDefault()
@@ -36,10 +32,6 @@ function Navbar() {
 
         try {
             navigate(`/products?search=${encodeURIComponent(search.trim())}`);
-            // if (response.data.prods.length === 0) {
-            //     console.log("No such product available");
-            // }
-
         } catch (error) {
             console.log(error);
         }
@@ -49,6 +41,10 @@ function Navbar() {
         user?.name ||
         user?.email?.split("@")[0] ||
         "Account";
+
+    const isHomeActive = location.pathname === "/home";
+    const isProductsActive = location.pathname.startsWith("/products");
+    const isWishlistActive = location.pathname === "/wishlist";
 
     return (
         <nav className="app-navbar">
@@ -60,29 +56,27 @@ function Navbar() {
             <div className="navbar-links">
                 <Link
                     to="/home"
-                    className={location.pathname === "/home" ? "nav-link active" : "nav-link"}
+                    className={isHomeActive ? "nav-link active" : "nav-link"}
                 >
                     Home
                 </Link>
 
                 <Link
                     to="/products"
-                    className={location.pathname.startsWith("/products") ? "nav-link active" : "nav-link"}
+                    className={isProductsActive ? "nav-link active" : "nav-link"}
                 >
                     Products
                 </Link>
 
                 <Link
                     to="/wishlist"
-                    className="nav-link"
+                    className={isWishlistActive ? "nav-link active" : "nav-link"}
                 >
                     wishList
                 </Link>
             </div>
 
-
             <form className="navbar-search" onSubmit={handlesubmit}>
-
                 <input
                     type="text"
                     placeholder="Search products..."
@@ -94,7 +88,6 @@ function Navbar() {
                 <button type="submit" className="search-button">
                     <span className="search-icon">⌕</span>
                 </button>
-
             </form>
 
             <div className="navbar-profile">
