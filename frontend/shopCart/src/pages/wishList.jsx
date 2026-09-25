@@ -5,13 +5,22 @@ import "../styles/wishlist.css";
 
 const WishList = () => {
     const [wishlist, setWishList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     const fetchList = async () => {
+        setLoading(true);
+        setError("");
+
         try {
             const response = await axiosInstance.get("/wishlist/");
-            setWishList(response.data.wishList);
+            setWishList(response.data.wishList || []);
         } catch (error) {
             console.log(error);
+            setWishList([]);
+            setError("Unable to load your wishlist right now. Please try again.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -26,7 +35,17 @@ const WishList = () => {
                 <p>{wishlist.length} items saved</p>
             </div>
 
-            {wishlist.length > 0 ? (
+            {loading ? (
+                <div className="wishlist-state">
+                    <div className="wishlist-loader"></div>
+                    <p>Loading your wishlist...</p>
+                </div>
+            ) : error ? (
+                <div className="wishlist-state wishlist-state--error">
+                    <h2>Something went wrong</h2>
+                    <p>{error}</p>
+                </div>
+            ) : wishlist.length > 0 ? (
                 <div className="wishlist-grid">
                     {wishlist.map((product) => (
                         <ProductCard
