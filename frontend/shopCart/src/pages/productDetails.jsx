@@ -9,8 +9,12 @@ function ProductDetails() {
 
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     const fetchProduct = async () => {
+        setLoading(true);
+        setError("");
+
         try {
             const response = await axiosInstance.get(`/product/products/${id}`);
            
@@ -18,6 +22,12 @@ function ProductDetails() {
             setProduct(response.data.prod);
         } catch (error) {
             console.log(error);
+            setProduct(null);
+            setError(
+                error.response?.status === 404
+                    ? "Product not found."
+                    : "Unable to load this product right now. Please try again."
+            );
         } finally {
             setLoading(false);
         }
@@ -48,7 +58,7 @@ function ProductDetails() {
     if (!product) {
         return (
             <div className="product-not-found">
-                <h2>Product not found</h2>
+                <h2>{error || "Product not found"}</h2>
                 <button onClick={() => navigate("/products")}>
                     Back to Products
                 </button>
@@ -116,13 +126,18 @@ function ProductDetails() {
                         </span>
                     </div>
 
-                    <button className="buy-button">
-                        Add to Cart
-                    </button>
+                    <div className="product-details-actions">
+                        <button className="buy-button product-cart-button">
+                            Add to Cart
+                        </button>
 
-                    <button onClick={handleadd} className="buy-button">
-                        wishList 
-                    </button>
+                        <button
+                            onClick={handleadd}
+                            className="buy-button product-wishlist-button"
+                        >
+                            Wishlist
+                        </button>
+                    </div>
 
                 </div>
 
