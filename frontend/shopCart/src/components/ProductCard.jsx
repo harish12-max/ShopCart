@@ -22,6 +22,16 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
         }
     }
 
+    const handleadd = async() =>{
+        try {
+        const res=  await axiosInstance.post(`/wishlist/${product._id}`)
+            console.log(res.data)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
     return (
         <article className={`product-card product-card--${variant}`}>
             <div className="product-card-image-container">
@@ -46,6 +56,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
                         <button
                             type="button"
                             className="product-card-wishlist-button"
+                            onClick={handleadd}
                         >
                             <span className="wishlist-heart">♡</span>
                             <span>Wishlist</span>
