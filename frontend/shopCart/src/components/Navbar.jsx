@@ -79,7 +79,7 @@ function Navbar() {
             <form className="navbar-search" onSubmit={handlesubmit}>
                 <input
                     type="text"
-                    placeholder="Search products..."
+                    placeholder="Search products or categories..."
                     name="search"
                     value={search}
                     onChange={handlechange}
