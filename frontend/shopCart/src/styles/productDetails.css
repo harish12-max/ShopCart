@@ -143,6 +143,12 @@
     font-weight: 800;
 }
 
+.product-details-actions {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 10px;
+}
+
 .buy-button {
     width: 100%;
     padding: 15px;
@@ -156,6 +162,19 @@
     cursor: pointer;
     box-shadow: 0 10px 22px rgba(31, 122, 92, .18);
     transition: .2s ease;
+}
+
+.product-wishlist-button {
+    background: #eef6f2;
+    color: #176247;
+    border: 1px solid #cfe2d9;
+    box-shadow: none;
+}
+
+.product-wishlist-button:hover {
+    background: #ddefe7;
+    color: #176247;
+    box-shadow: none;
 }
 
 .buy-button:hover {
@@ -245,6 +264,12 @@
 
     .product-details-price {
         font-size: 28px;
+    }
+}
+
+@media (max-width: 600px) {
+    .product-details-actions {
+        grid-template-columns: 1fr;
     }
 }
 
