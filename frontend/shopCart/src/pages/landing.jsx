@@ -248,23 +248,23 @@ function Landing() {
       <section className="stats-section">
 
         <div className="stat">
-          <h2>10K+</h2>
-          <p>Products</p>
+          <h2>Easy</h2>
+          <p>Product Discovery</p>
         </div>
 
         <div className="stat">
-          <h2>500+</h2>
-          <p>Brands</p>
+          <h2>Multi</h2>
+          <p>Product Categories</p>
         </div>
 
         <div className="stat">
-          <h2>4.8/5</h2>
-          <p>Customer Rating</p>
+          <h2>Simple</h2>
+          <p>Wishlist Experience</p>
         </div>
 
         <div className="stat">
-          <h2>24/7</h2>
-          <p>Support</p>
+          <h2>Secure</h2>
+          <p>Account Access</p>
         </div>
 
       </section>
@@ -274,7 +274,7 @@ function Landing() {
           WHY SHOPCART
       ========================= */}
 
-      <section className="why-section">
+      <section className="why-section" id="why">
 
         <div className="section-heading">
 
@@ -368,7 +368,7 @@ function Landing() {
           TRENDING PRODUCTS
       ========================= */}
 
-      <section className="products-section">
+      <section className="products-section" id="products">
 
         <div className="section-heading">
 
@@ -594,9 +594,9 @@ function Landing() {
 
             <h3>Support</h3>
 
-            <a href="#support">Contact</a>
-            <a href="#support">Help Center</a>
-            <a href="#support">FAQ</a>
+            <a href="mailto:support@shopcart.com">Contact</a>
+            <a href="#why">Help & Features</a>
+            <a href="#products">Browse Products</a>
 
           </div>
 
@@ -610,8 +610,8 @@ function Landing() {
           </p>
 
           <div>
-            <a href="#privacy">Privacy</a>
-            <a href="#terms">Terms</a>
+            <a href="#why">About</a>
+            <a href="#products">Shop</a>
           </div>
 
         </div>
