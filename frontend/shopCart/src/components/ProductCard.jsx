@@ -12,9 +12,9 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
     };
 
 
-    const handleremove = async() =>{
+    const handleRemove = async () => {
         try {
-            const res =  await axiosInstance.delete(`/wishlist/${product._id}`)
+            await axiosInstance.delete(`/wishlist/${product._id}`)
            onRemove(product._id)
 
         } catch (error) {
@@ -22,10 +22,9 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
         }
     }
 
-    const handleadd = async() =>{
+    const handleAdd = async () => {
         try {
-        const res=  await axiosInstance.post(`/wishlist/${product._id}`)
-            console.log(res.data)
+        await axiosInstance.post(`/wishlist/${product._id}`)
         } catch (error) {
             console.log(error)
         }
@@ -56,7 +55,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
                         <button
                             type="button"
                             className="product-card-wishlist-button"
-                            onClick={handleadd}
+                            onClick={handleAdd}
                         >
                             <span className="wishlist-heart">♡</span>
                             <span>Wishlist</span>
@@ -110,7 +109,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
 
                         <button
                             className="product-card-remove-button"
-                            onClick={handleremove}
+                            onClick={handleRemove}
                         >
                             Remove
                         </button>
@@ -121,9 +120,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
                         onClick={handleDetails}
                     >
                         <span>
-                            {variant === "featured"
-                                ? "View Details"
-                                : "View Details"}
+                            "View Details"
                         </span>
                         <span className="product-card-arrow">→</span>
                     </button>
