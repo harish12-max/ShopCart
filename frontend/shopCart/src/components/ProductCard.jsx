@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/productCard.css";
+import axiosInstance from "../AxiosCall/axios";
+
 
 const ProductCard = ({ product, variant = "products", onRemove }) => {
     const navigate = useNavigate();
@@ -8,6 +10,17 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
     const handleDetails = () => {
         navigate(`/products/${product._id}`);
     };
+
+
+    const handleremove = async() =>{
+        try {
+            const res =  await axiosInstance.delete(`/wishlist/${product._id}`)
+           onRemove(product._id)
+
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     return (
         <article className={`product-card product-card--${variant}`}>
@@ -74,7 +87,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
 
                         <button
                             className="product-card-remove-button"
-                            onClick={() => onRemove?.(product._id)}
+                            onClick={handleremove}
                         >
                             Remove
                         </button>

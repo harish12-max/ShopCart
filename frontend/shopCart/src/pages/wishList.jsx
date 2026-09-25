@@ -33,6 +33,11 @@ const WishList = () => {
                             key={product._id}
                             product={product}
                             variant="wishlist"
+                            onRemove={(productId) => {
+                                setWishList(prev =>
+                                    prev.filter(item => item._id !== productId)
+                                );
+                            }}
                         />
                     ))}
                 </div>

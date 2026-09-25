@@ -13,8 +13,7 @@ function ProductDetails() {
     const fetchProduct = async () => {
         try {
             const response = await axiosInstance.get(`/product/products/${id}`);
-
-            // console.log(response.data.prod);
+           
 
             setProduct(response.data.prod);
         } catch (error) {
@@ -23,6 +22,15 @@ function ProductDetails() {
             setLoading(false);
         }
     };
+
+    const handleadd = async() =>{
+        try {
+          await axiosInstance.post(`/wishlist/${id}`)
+  
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
         fetchProduct();
@@ -110,6 +118,10 @@ function ProductDetails() {
 
                     <button className="buy-button">
                         Add to Cart
+                    </button>
+
+                    <button onClick={handleadd} className="buy-button">
+                        wishList 
                     </button>
 
                 </div>
