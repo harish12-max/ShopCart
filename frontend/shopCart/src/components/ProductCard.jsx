@@ -37,9 +37,21 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
             </div>
 
             <div className="product-card-info">
-                <p className="product-card-category">
-                    {product.category}
-                </p>
+                <div className="product-card-category-row">
+                    <p className="product-card-category">
+                        {product.category}
+                    </p>
+
+                    {variant !== "wishlist" && (
+                        <button
+                            type="button"
+                            className="product-card-wishlist-button"
+                        >
+                            <span className="wishlist-heart">♡</span>
+                            <span>Wishlist</span>
+                        </button>
+                    )}
+                </div>
 
                 <h2 className="product-card-name">
                     {product.name}
