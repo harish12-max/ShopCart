@@ -1,6 +1,7 @@
 import React from 'react'
 import { useAuth } from '../Context/AuthContext'
 import {Navigate} from "react-router-dom"
+import "../styles/authRoute.css"
 
 
 function PublicRoute({children}) {
@@ -8,7 +9,12 @@ function PublicRoute({children}) {
     
 
     if(loading){
-      return <h1>loading...</h1>
+      return (
+        <div className="auth-route-loading">
+          <div className="auth-route-loader"></div>
+          <p>Loading...</p>
+        </div>
+      )
     }
 
     if(user){
