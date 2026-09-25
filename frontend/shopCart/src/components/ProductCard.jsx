@@ -120,7 +120,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
                         onClick={handleDetails}
                     >
                         <span>
-                            "View Details"
+                            View Details
                         </span>
                         <span className="product-card-arrow">→</span>
                     </button>
