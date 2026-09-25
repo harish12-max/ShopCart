@@ -6,12 +6,16 @@ import { useSearchParams } from "react-router-dom";
 
 function Products() {
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
     const [searchParams] = useSearchParams();
     const searchQuery = searchParams.get("search");
     const categoryQuery = searchParams.get("category");
 
     const fetchProducts = async () => {
         let response;
+        setLoading(true);
+        setError("");
 
         try {
             if (searchQuery || categoryQuery) {
@@ -25,9 +29,13 @@ function Products() {
                 response = await axiosInstance.get("/product/products");
             }
 
-            setProducts(response.data.prods);
+            setProducts(response.data.prods || []);
         } catch (error) {
             console.log(error);
+            setProducts([]);
+            setError("Unable to load products right now. Please try again.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -56,7 +64,17 @@ function Products() {
                 </div>
             </div>
 
-            {products.length === 0 ? (
+            {loading ? (
+                <div className="products-state">
+                    <div className="products-loader"></div>
+                    <p>Loading products...</p>
+                </div>
+            ) : error ? (
+                <div className="products-state products-state--error">
+                    <h2>Something went wrong</h2>
+                    <p>{error}</p>
+                </div>
+            ) : products.length === 0 ? (
                 <div className="no-products">
                     <h2>No product available</h2>
                     <p>Try searching for a different product.</p>
