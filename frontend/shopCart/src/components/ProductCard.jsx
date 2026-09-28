@@ -1,35 +1,28 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/productCard.css";
-import axiosInstance from "../AxiosCall/axios";
-
+import { useWishlist } from "../Context/WishlistContext";
 
 const ProductCard = ({ product, variant = "products", onRemove }) => {
     const navigate = useNavigate();
+    const { isWishlisted, toggleWishlist } = useWishlist();
+    const wishlisted = isWishlisted(product._id);
 
     const handleDetails = () => {
         navigate(`/products/${product._id}`);
     };
 
-
-    const handleRemove = async () => {
+    const handleWishlistToggle = async () => {
         try {
-            await axiosInstance.delete(`/wishlist/${product._id}`)
-           onRemove(product._id)
+            await toggleWishlist(product._id);
 
+            if (wishlisted && onRemove) {
+                onRemove(product._id);
+            }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
-
-    const handleAdd = async () => {
-        try {
-        await axiosInstance.post(`/wishlist/${product._id}`)
-        } catch (error) {
-            console.log(error)
-        }
-    }
-
+    };
 
     return (
         <article className={`product-card product-card--${variant}`}>
@@ -47,25 +40,25 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
 
             <div className="product-card-info">
                 <div className="product-card-category-row">
-                    <p className="product-card-category">
-                        {product.category}
-                    </p>
+                    <p className="product-card-category">{product.category}</p>
 
                     {variant !== "wishlist" && (
                         <button
                             type="button"
-                            className="product-card-wishlist-button"
-                            onClick={handleAdd}
+                            className={`product-card-wishlist-button ${wishlisted ? "is-added" : ""}`}
+                            onClick={handleWishlistToggle}
                         >
-                            <span className="wishlist-heart">♡</span>
-                            <span>Wishlist</span>
+                            <span className="wishlist-heart">
+                                {wishlisted ? "♥" : "♡"}
+                            </span>
+                            <span>
+                                {wishlisted ? "Added to Wishlist" : "Wishlist"}
+                            </span>
                         </button>
                     )}
                 </div>
 
-                <h2 className="product-card-name">
-                    {product.name}
-                </h2>
+                <h2 className="product-card-name">{product.name}</h2>
 
                 <p className="product-card-description">
                     {product.description}
@@ -74,9 +67,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
                 <div className="product-card-bottom">
                     <div>
                         <p className="product-card-price-label">Price</p>
-                        <p className="product-card-price">
-                            ₹{product.price}
-                        </p>
+                        <p className="product-card-price">₹{product.price}</p>
                     </div>
 
                     {variant === "products" && (
@@ -109,7 +100,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
 
                         <button
                             className="product-card-remove-button"
-                            onClick={handleRemove}
+                            onClick={handleWishlistToggle}
                         >
                             Remove
                         </button>
@@ -119,9 +110,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
                         className="product-card-details-button"
                         onClick={handleDetails}
                     >
-                        <span>
-                            View Details
-                        </span>
+                        <span>View Details</span>
                         <span className="product-card-arrow">→</span>
                     </button>
                 )}
