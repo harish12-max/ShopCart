@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../AxiosCall/axios";
+import { useWishlist } from "../Context/WishlistContext";
 import "../styles/productDetails.css";
 
 function ProductDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { isWishlisted, toggleWishlist } = useWishlist();
 
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -17,8 +19,6 @@ function ProductDetails() {
 
         try {
             const response = await axiosInstance.get(`/product/products/${id}`);
-           
-
             setProduct(response.data.prod);
         } catch (error) {
             console.log(error);
@@ -33,14 +33,13 @@ function ProductDetails() {
         }
     };
 
-    const handleadd = async() =>{
+    const handleWishlistToggle = async () => {
         try {
-          await axiosInstance.post(`/wishlist/${id}`)
-  
+            await toggleWishlist(id);
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
+    };
 
     useEffect(() => {
         fetchProduct();
@@ -66,9 +65,10 @@ function ProductDetails() {
         );
     }
 
+    const wishlisted = isWishlisted(id);
+
     return (
         <div className="product-details-page">
-
             <button
                 className="back-button"
                 onClick={() => navigate("/products")}
@@ -77,8 +77,6 @@ function ProductDetails() {
             </button>
 
             <div className="product-details-card">
-
-                {/* Product Image */}
                 <div className="product-details-image-section">
                     <img
                         src={product.image}
@@ -87,16 +85,12 @@ function ProductDetails() {
                     />
                 </div>
 
-                {/* Product Information */}
                 <div className="product-details-info">
-
                     <span className="product-details-category">
                         {product.category}
                     </span>
 
-                    <h1 className="product-details-name">
-                        {product.name}
-                    </h1>
+                    <h1 className="product-details-name">{product.name}</h1>
 
                     <p className="product-details-description">
                         {product.description}
@@ -109,10 +103,7 @@ function ProductDetails() {
                     <div className="product-details-divider"></div>
 
                     <div className="product-details-stock">
-                        <span className="stock-label">
-                            Availability
-                        </span>
-
+                        <span className="stock-label">Availability</span>
                         <span
                             className={
                                 product.stock > 0
@@ -132,17 +123,17 @@ function ProductDetails() {
                         </button>
 
                         <button
-                            onClick={handleadd}
-                            className="buy-button product-wishlist-button"
+                            onClick={handleWishlistToggle}
+                            className={`buy-button product-wishlist-button ${wishlisted ? "is-added" : ""}`}
                         >
-                            Wishlist
+                            <span className="wishlist-details-heart">
+                                {wishlisted ? "♥" : "♡"}
+                            </span>
+                            {wishlisted ? "Added to Wishlist" : "Wishlist"}
                         </button>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
     );
 }
