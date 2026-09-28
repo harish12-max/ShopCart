@@ -109,6 +109,17 @@
     transform: scale(1.15);
 }
 
+.product-card-wishlist-button.is-added {
+    background: #1f7a5c;
+    border-color: #1f7a5c;
+    color: #ffffff;
+}
+
+.product-card-wishlist-button.is-added:hover {
+    background: #176247;
+    border-color: #176247;
+}
+
 .product-card-name {
     margin: 0 0 9px;
     color: #171717;
