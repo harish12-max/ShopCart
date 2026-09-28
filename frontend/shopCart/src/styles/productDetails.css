@@ -179,8 +179,26 @@
 
 .product-wishlist-button:hover {
     background: #ddefe7;
-    color: #eef6f2;
+    color: #176247;
     box-shadow: none;
+}
+
+.product-wishlist-button.is-added {
+    background: #1f7a5c;
+    color: #ffffff;
+    border-color: #1f7a5c;
+    box-shadow: 0 10px 22px rgba(31, 122, 92, .18);
+}
+
+.product-wishlist-button.is-added:hover {
+    background: #176247;
+    color: #ffffff;
+}
+
+.wishlist-details-heart {
+    margin-right: 7px;
+    font-size: 17px;
+    line-height: 1;
 }
 
 .buy-button:hover {
