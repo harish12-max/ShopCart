@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../styles/productCard.css";
 import { useWishlist } from "../Context/WishlistContext";
+import { useCart } from "../Context/CartContext";
 
 const ProductCard = ({ product, variant = "products", onRemove }) => {
     const navigate = useNavigate();
     const { isWishlisted, toggleWishlist } = useWishlist();
+    const { addToCart } = useCart();
+    const [addingToCart, setAddingToCart] = useState(false);
+    const [cartError, setCartError] = useState("");
+
     const wishlisted = isWishlisted(product._id);
 
     const handleDetails = () => {
@@ -21,6 +26,25 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
             }
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const handleAddToCart = async () => {
+        if (product.stock <= 0 || addingToCart) return;
+
+        setAddingToCart(true);
+        setCartError("");
+
+        try {
+            await addToCart(product._id);
+        } catch (error) {
+            console.log(error);
+            setCartError(
+                error.response?.data?.message ||
+                "Unable to add to cart."
+            );
+        } finally {
+            setAddingToCart(false);
         }
     };
 
@@ -67,7 +91,9 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
                 <div className="product-card-bottom">
                     <div>
                         <p className="product-card-price-label">Price</p>
-                        <p className="product-card-price">₹{product.price}</p>
+                        <p className="product-card-price">
+                            ₹{product.price.toLocaleString("en-IN")}
+                        </p>
                     </div>
 
                     {variant === "products" && (
@@ -88,6 +114,10 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
                     )}
                 </div>
 
+                {cartError && variant === "products" && (
+                    <p className="product-card-cart-error">{cartError}</p>
+                )}
+
                 {variant === "wishlist" ? (
                     <div className="product-card-actions">
                         <button
@@ -106,13 +136,27 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
                         </button>
                     </div>
                 ) : (
-                    <button
-                        className="product-card-details-button"
-                        onClick={handleDetails}
-                    >
-                        <span>View Details</span>
-                        <span className="product-card-arrow">→</span>
-                    </button>
+                    <div className="product-card-actions product-card-product-actions">
+                        <button
+                            className="product-card-details-button"
+                            onClick={handleDetails}
+                        >
+                            <span>View Details</span>
+                            <span className="product-card-arrow">→</span>
+                        </button>
+
+                        <button
+                            className="product-card-add-cart-button"
+                            onClick={handleAddToCart}
+                            disabled={product.stock <= 0 || addingToCart}
+                        >
+                            {addingToCart
+                                ? "Adding..."
+                                : product.stock <= 0
+                                    ? "Out of Stock"
+                                    : "Add to Cart"}
+                        </button>
+                    </div>
                 )}
             </div>
         </article>
