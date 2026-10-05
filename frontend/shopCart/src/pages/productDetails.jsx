@@ -2,15 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axiosInstance from "../AxiosCall/axios";
 import { useWishlist } from "../Context/WishlistContext";
+import { useCart } from "../Context/CartContext";
 import "../styles/productDetails.css";
 
 function ProductDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { isWishlisted, toggleWishlist } = useWishlist();
+    const { addToCart } = useCart();
 
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [addingToCart, setAddingToCart] = useState(false);
+    const [cartMessage, setCartMessage] = useState("");
     const [error, setError] = useState("");
 
     const fetchProduct = async () => {
@@ -38,6 +42,26 @@ function ProductDetails() {
             await toggleWishlist(id);
         } catch (error) {
             console.log(error);
+        }
+    };
+
+    const handleAddToCart = async () => {
+        if (!product || product.stock <= 0 || addingToCart) return;
+
+        setAddingToCart(true);
+        setCartMessage("");
+
+        try {
+            await addToCart(product._id);
+            setCartMessage("Added to cart successfully.");
+        } catch (error) {
+            console.log(error);
+            setCartMessage(
+                error.response?.data?.message ||
+                "Unable to add this product to cart."
+            );
+        } finally {
+            setAddingToCart(false);
         }
     };
 
@@ -97,7 +121,7 @@ function ProductDetails() {
                     </p>
 
                     <div className="product-details-price">
-                        ₹{product.price}
+                        ₹{product.price.toLocaleString("en-IN")}
                     </div>
 
                     <div className="product-details-divider"></div>
@@ -117,9 +141,29 @@ function ProductDetails() {
                         </span>
                     </div>
 
+                    {cartMessage && (
+                        <p
+                            className={
+                                cartMessage.includes("successfully")
+                                    ? "cart-action-message success"
+                                    : "cart-action-message error"
+                            }
+                        >
+                            {cartMessage}
+                        </p>
+                    )}
+
                     <div className="product-details-actions">
-                        <button className="buy-button product-cart-button">
-                            Add to Cart
+                        <button
+                            className="buy-button product-cart-button"
+                            onClick={handleAddToCart}
+                            disabled={product.stock <= 0 || addingToCart}
+                        >
+                            {addingToCart
+                                ? "Adding..."
+                                : product.stock <= 0
+                                    ? "Out of Stock"
+                                    : "Add to Cart"}
                         </button>
 
                         <button
