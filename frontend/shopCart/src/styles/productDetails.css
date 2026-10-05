@@ -310,3 +310,30 @@
         font-size: 28px;
     }
 }
+
+.product-cart-button:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.product-cart-button:disabled:hover {
+    background: #9ca3af;
+    box-shadow: none;
+    transform: none;
+}
+
+.cart-action-message {
+    margin: -8px 0 18px;
+    font-size: 13px;
+    font-weight: 750;
+}
+
+.cart-action-message.success {
+    color: #16805b;
+}
+
+.cart-action-message.error {
+    color: #dc2626;
+}
