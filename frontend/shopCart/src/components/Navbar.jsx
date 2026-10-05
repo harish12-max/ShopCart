@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
+import { useCart } from "../Context/CartContext";
 import axiosInstance from "../AxiosCall/axios";
 import "../styles/navbar.css";
 
 function Navbar() {
     const { user, setUser } = useAuth();
-    const [search, setSearch] = useState("")
+    const { totalItems } = useCart();
+    const [search, setSearch] = useState("");
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -22,11 +24,11 @@ function Navbar() {
     };
 
     const handlechange = (e) => {
-        setSearch(e.target.value)
-    }
+        setSearch(e.target.value);
+    };
 
     const handlesubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
 
         if (!search.trim()) return;
 
@@ -35,7 +37,7 @@ function Navbar() {
         } catch (error) {
             console.log(error);
         }
-    }
+    };
 
     const profileName =
         user?.name ||
@@ -45,6 +47,7 @@ function Navbar() {
     const isHomeActive = location.pathname === "/home";
     const isProductsActive = location.pathname.startsWith("/products");
     const isWishlistActive = location.pathname === "/wishlist";
+    const isCartActive = location.pathname === "/cart";
 
     return (
         <nav className="app-navbar">
@@ -72,7 +75,15 @@ function Navbar() {
                     to="/wishlist"
                     className={isWishlistActive ? "nav-link active" : "nav-link"}
                 >
-                    wishList
+                    Wishlist
+                </Link>
+
+                <Link
+                    to="/cart"
+                    className={isCartActive ? "nav-link active cart-nav-link" : "nav-link cart-nav-link"}
+                >
+                    <span>Cart</span>
+                    <span className="cart-count">({totalItems})</span>
                 </Link>
             </div>
 
