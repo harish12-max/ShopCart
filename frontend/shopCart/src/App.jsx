@@ -5,8 +5,10 @@ import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Products from "./pages/products";
 import ProductDetails from "./pages/productDetails";
+import Cart from "./pages/cart";
 import { AuthProvider } from "./Context/AuthContext";
 import { WishlistProvider } from "./Context/WishlistContext";
+import { CartProvider } from "./Context/CartContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import AuthenticatedLayout from "./components/AuthenticatedLayout";
@@ -25,7 +27,9 @@ function App() {
                         <Route
                             element={
                                 <ProtectedRoute>
-                                    <AuthenticatedLayout />
+                                    <CartProvider>
+                                        <AuthenticatedLayout />
+                                    </CartProvider>
                                 </ProtectedRoute>
                             }
                         >
@@ -33,6 +37,7 @@ function App() {
                             <Route path="/products" element={<Products />} />
                             <Route path="/products/:id" element={<ProductDetails />} />
                             <Route path="/wishlist" element={<WishList />} />
+                            <Route path="/cart" element={<Cart />} />
                         </Route>
                     </Routes>
                 </BrowserRouter>
