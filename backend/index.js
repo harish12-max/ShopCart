@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import userRoutes from "./routes/userRoutes.js"
 import productRoutes from "./routes/productRoutes.js";
 import wishListRoutes from "./routes/wishListRoutes.js"
+import cartRoutes from "./routes/cartRoutes.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv"
 import cors from "cors"
@@ -25,7 +26,7 @@ mongoose.connect(process.env.dbUrl).then(()=>{
 })
 
 app.use(cors({
-    origin:"http://localhost:5174",
+    origin:"http://localhost:5173",
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
@@ -35,6 +36,7 @@ app.use(cors({
 app.use("/user" , userRoutes)
 app.use("/product" , productRoutes)
 app.use("/wishlist" , wishListRoutes)
+app.use('/cart' , cartRoutes)
 
 
 app.listen(port ,() =>{
