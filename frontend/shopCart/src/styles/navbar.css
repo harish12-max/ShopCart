@@ -288,3 +288,40 @@
     font-size: 20px;
     color: #64748b;
 }
+
+.cart-nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.cart-count {
+    color: #176247;
+    font-weight: 900;
+}
+
+.nav-link.active .cart-count {
+    color: #176247;
+}
+
+@media (max-width: 1050px) {
+    .navbar-search {
+        width: 220px;
+    }
+
+    .app-navbar {
+        gap: 14px;
+    }
+}
+
+@media (max-width: 900px) {
+    .navbar-search {
+        width: 180px;
+    }
+}
+
+@media (max-width: 760px) {
+    .navbar-search {
+        display: none;
+    }
+}
