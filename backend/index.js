@@ -38,7 +38,7 @@ app.use("/user" , userRoutes)
 app.use("/product" , productRoutes)
 app.use("/wishlist" , wishListRoutes)
 app.use('/cart' , cartRoutes)
-app.use("/order" ,orderRoutes)
+app.use("/orders" ,orderRoutes)
 
 
 app.listen(port ,() =>{

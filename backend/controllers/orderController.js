@@ -2,6 +2,7 @@ import Order from "../modules/ordermodel.js";
 import product from "../modules/productmodel.js";
 import User from "../modules/usermodel.js";
 import razorpay from "../config/razorpay.js";
+import mongoose from "mongoose";
 import crypto from "crypto"
 
 export const createOrder = async (req, res) => {
@@ -181,26 +182,32 @@ export const getOrders = async (req, res) => {
 }
 
 
-export const getOrderId = async(req, res) =>{
+export const getOrderId = async (req, res) => {
     try {
-        const {orderId} = req.params
+        const { orderId } = req.params
         const userId = req.user._id
-        
+
+        if (!mongoose.Types.ObjectId.isValid(orderId)) {
+            return res.status(400).json({
+                message: "Invalid order ID"
+            });
+        }
+
         const order = await Order.findOne({
             _id: orderId,
             user: userId
         });
 
         if (!order) {
-            return res.status(404).json({message: "Order not found"});
+            return res.status(404).json({ message: "Order not found" });
         }
 
-        return res.status(200).json({message: "Order fetched successfully",order});
-        
-        
+        return res.status(200).json({ message: "Order fetched successfully", order });
+
+
     } catch (error) {
         console.log(error)
-        return res.status(500).json({message:"Internal Server Error"})
+        return res.status(500).json({ message: "Internal Server Error" })
     }
 }
 

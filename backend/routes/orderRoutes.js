@@ -5,8 +5,8 @@ import { createOrder, getOrderId, getOrders, verifyPayment } from "../controller
 const orderRoutes = express.Router();
 
 orderRoutes.post("/create-payment-order", isAuthenticated, createOrder)
-orderRoutes.post("//verify-payment" , isAuthenticated, verifyPayment)
-orderRoutes.get("/order" ,isAuthenticated , getOrders)
+orderRoutes.post("/verify-payment" , isAuthenticated, verifyPayment)
+orderRoutes.get("/" ,isAuthenticated , getOrders)
 orderRoutes.get("/:orderId" , isAuthenticated , getOrderId)
 
 
