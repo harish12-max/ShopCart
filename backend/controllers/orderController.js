@@ -114,7 +114,7 @@ export const verifyPayment = async (req, res) => {
             return res.status(400).json({ message: "Payments Details are REquired" })
         }
 
-        const order = await Order.findById({
+        const order = await Order.findOne({
             razorpayOrderId: razorpay_order_id,
             user: req.user._id
         })
