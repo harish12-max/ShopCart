@@ -1,4 +1,3 @@
-import { Timestamp } from "mongodb";
 import mongoose from "mongoose";
 
 
@@ -91,7 +90,7 @@ const orderSchema = new mongoose.Schema({
     razorpayPaymentId: String
 },
     {
-        Timestamp: true
+        timestamps: true
     }
 )
 
