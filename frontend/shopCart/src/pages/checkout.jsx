@@ -1,7 +1,8 @@
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
 import axiosInstance from "../AxiosCall/axios";
+import { formatMoney } from "../utils/formatters";
 import "../styles/checkout.css";
 
 const initialForm = {
@@ -13,8 +14,30 @@ const initialForm = {
     pincode: ""
 };
 
-const money = (value) =>
-    `₹${Number(value || 0).toLocaleString("en-IN")}`;
+let razorpayLoaderPromise;
+
+const loadRazorpay = () => {
+    if (window.Razorpay) {
+        return Promise.resolve(true);
+    }
+
+    if (razorpayLoaderPromise) {
+        return razorpayLoaderPromise;
+    }
+
+    razorpayLoaderPromise = new Promise((resolve) => {
+        const script = document.createElement("script");
+
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.async = true;
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+
+        document.body.appendChild(script);
+    });
+
+    return razorpayLoaderPromise;
+};
 
 const Checkout = () => {
     const navigate = useNavigate();
@@ -46,12 +69,16 @@ const Checkout = () => {
         [items]
     );
 
-    const itemCount = items.reduce(
-        (sum, item) => sum + Number(item.quantity || 0),
-        0
+    const itemCount = useMemo(
+        () =>
+            items.reduce(
+                (sum, item) => sum + Number(item.quantity || 0),
+                0
+            ),
+        [items]
     );
 
-    const change = (event) => {
+    const handleChange = (event) => {
         const { name, value } = event.target;
 
         setForm((previous) => ({
@@ -75,8 +102,7 @@ const Checkout = () => {
         }
 
         if (!/^\d{10}$/.test(form.phone.trim())) {
-            nextErrors.phone =
-                "Enter a valid 10-digit phone number.";
+            nextErrors.phone = "Enter a valid 10-digit phone number.";
         }
 
         if (form.addressLine1.trim().length < 10) {
@@ -93,8 +119,7 @@ const Checkout = () => {
         }
 
         if (!/^\d{6}$/.test(form.pincode.trim())) {
-            nextErrors.pincode =
-                "Enter a valid 6-digit pincode.";
+            nextErrors.pincode = "Enter a valid 6-digit pincode.";
         }
 
         setErrors(nextErrors);
@@ -102,26 +127,12 @@ const Checkout = () => {
         return Object.keys(nextErrors).length === 0;
     };
 
-    const loadRazorpay = () => {
-        return new Promise((resolve) => {
-            if (window.Razorpay) {
-                resolve(true);
-                return;
-            }
-
-            const script = document.createElement("script");
-
-            script.src =
-                "https://checkout.razorpay.com/v1/checkout.js";
-            script.onload = () => resolve(true);
-            script.onerror = () => resolve(false);
-
-            document.body.appendChild(script);
-        });
-    };
-
     const createPaymentOrder = async (event) => {
         event.preventDefault();
+
+        if (submitting) {
+            return;
+        }
 
         setSubmitError("");
 
@@ -141,7 +152,7 @@ const Checkout = () => {
 
             if (!razorpayLoaded) {
                 throw new Error(
-                    "Unable to load Razorpay checkout."
+                    "Unable to load Razorpay checkout. Please try again."
                 );
             }
 
@@ -167,7 +178,7 @@ const Checkout = () => {
                 keyId
             } = response.data;
 
-            if (!razorpayOrderId || !keyId) {
+            if (!orderId || !razorpayOrderId || !keyId) {
                 throw new Error(
                     "Razorpay order details are missing."
                 );
@@ -207,13 +218,14 @@ const Checkout = () => {
                         await fetchCart();
 
                         navigate("/orders", {
+                            replace: true,
                             state: {
                                 orderCreated: true,
                                 orderId
                             }
                         });
                     } catch (error) {
-                        console.log(error);
+                        console.error("Payment verification error:", error);
 
                         setSubmitError(
                             error.response?.data?.message ||
@@ -237,10 +249,9 @@ const Checkout = () => {
             const razorpay = new window.Razorpay(options);
 
             razorpay.on("payment.failed", (paymentError) => {
-                console.log(paymentError);
+                console.error("Razorpay payment failed:", paymentError);
 
                 setSubmitting(false);
-
                 setSubmitError(
                     paymentError.error?.description ||
                     "Payment failed. Please try again."
@@ -249,7 +260,7 @@ const Checkout = () => {
 
             razorpay.open();
         } catch (error) {
-            console.log(error);
+            console.error("Payment setup error:", error);
 
             setSubmitError(
                 error.response?.data?.message ||
@@ -266,9 +277,7 @@ const Checkout = () => {
             <div className="checkout-page">
                 <div className="checkout-state">
                     <div className="checkout-loader"></div>
-
                     <h2>Preparing checkout</h2>
-
                     <p>Loading your cart details...</p>
                 </div>
             </div>
@@ -281,9 +290,7 @@ const Checkout = () => {
                 <div className="checkout-empty">
                     <div className="checkout-empty-icon">🛒</div>
 
-                    <p className="checkout-eyebrow">
-                        CHECKOUT
-                    </p>
+                    <p className="checkout-eyebrow">CHECKOUT</p>
 
                     <h1>Your cart is empty</h1>
 
@@ -293,6 +300,7 @@ const Checkout = () => {
 
                     <button
                         className="checkout-primary-button"
+                        type="button"
                         onClick={() => navigate("/products")}
                     >
                         Browse Products
@@ -306,15 +314,12 @@ const Checkout = () => {
         <div className="checkout-page">
             <div className="checkout-header">
                 <div>
-                    <p className="checkout-eyebrow">
-                        CHECKOUT
-                    </p>
+                    <p className="checkout-eyebrow">CHECKOUT</p>
 
                     <h1>Complete your order</h1>
 
                     <p>
-                        Enter your delivery details and continue
-                        to payment.
+                        Enter your delivery details and continue to payment.
                     </p>
                 </div>
 
@@ -333,7 +338,6 @@ const Checkout = () => {
 
                     <div>
                         <strong>Delivery</strong>
-
                         <small>Shipping details</small>
                     </div>
                 </div>
@@ -345,7 +349,6 @@ const Checkout = () => {
 
                     <div>
                         <strong>Payment</strong>
-
                         <small>Razorpay checkout</small>
                     </div>
                 </div>
@@ -354,26 +357,25 @@ const Checkout = () => {
             <form
                 className="checkout-layout"
                 onSubmit={createPaymentOrder}
+                noValidate
             >
                 <main className="checkout-main">
                     <section className="checkout-card">
                         <div className="checkout-section-heading">
-                            <div className="checkout-section-number">
-                                01
-                            </div>
+                            <div className="checkout-section-number">01</div>
 
                             <div>
                                 <h2>Delivery details</h2>
-
-                                <p>
-                                    Where should we deliver your
-                                    order?
-                                </p>
+                                <p>Where should we deliver your order?</p>
                             </div>
                         </div>
 
                         {submitError && (
-                            <div className="checkout-error">
+                            <div
+                                className="checkout-error"
+                                role="alert"
+                                aria-live="polite"
+                            >
                                 <span>!</span>
                                 {submitError}
                             </div>
@@ -384,9 +386,10 @@ const Checkout = () => {
                                 label="Full name"
                                 name="fullName"
                                 value={form.fullName}
-                                onChange={change}
+                                onChange={handleChange}
                                 error={errors.fullName}
                                 placeholder="Enter your full name"
+                                autoComplete="name"
                                 full
                             />
 
@@ -394,29 +397,29 @@ const Checkout = () => {
                                 label="Phone number"
                                 name="phone"
                                 value={form.phone}
-                                onChange={change}
+                                onChange={handleChange}
                                 error={errors.phone}
                                 placeholder="10-digit mobile number"
                                 maxLength="10"
+                                autoComplete="tel"
                                 full
                             />
 
                             <div className="checkout-field checkout-field-full">
-                                <label htmlFor="addressLine1">
-                                    Address
-                                </label>
+                                <label htmlFor="addressLine1">Address</label>
 
                                 <textarea
                                     id="addressLine1"
                                     name="addressLine1"
                                     rows="4"
                                     value={form.addressLine1}
-                                    onChange={change}
+                                    onChange={handleChange}
                                     placeholder="House / flat, street, area, landmark..."
+                                    autoComplete="street-address"
                                     aria-invalid={Boolean(
                                         errors.addressLine1
                                     )}
-                                ></textarea>
+                                />
 
                                 {errors.addressLine1 && (
                                     <small className="field-error">
@@ -429,45 +432,42 @@ const Checkout = () => {
                                 label="City"
                                 name="city"
                                 value={form.city}
-                                onChange={change}
+                                onChange={handleChange}
                                 error={errors.city}
                                 placeholder="Your city"
+                                autoComplete="address-level2"
                             />
 
                             <Field
                                 label="State"
                                 name="state"
                                 value={form.state}
-                                onChange={change}
+                                onChange={handleChange}
                                 error={errors.state}
                                 placeholder="Your state"
+                                autoComplete="address-level1"
                             />
 
                             <Field
                                 label="Pincode"
                                 name="pincode"
                                 value={form.pincode}
-                                onChange={change}
+                                onChange={handleChange}
                                 error={errors.pincode}
                                 placeholder="6-digit pincode"
                                 maxLength="6"
+                                autoComplete="postal-code"
                             />
                         </div>
                     </section>
 
                     <section className="checkout-card">
                         <div className="checkout-section-heading">
-                            <div className="checkout-section-number">
-                                02
-                            </div>
+                            <div className="checkout-section-number">02</div>
 
                             <div>
                                 <h2>Payment</h2>
-
-                                <p>
-                                    You'll continue to Razorpay
-                                    after this step.
-                                </p>
+                                <p>You'll continue to Razorpay after this step.</p>
                             </div>
                         </div>
 
@@ -478,10 +478,7 @@ const Checkout = () => {
 
                             <div>
                                 <strong>Online Payment</strong>
-
-                                <p>
-                                    Secure payment through Razorpay.
-                                </p>
+                                <p>Secure payment through Razorpay.</p>
                             </div>
 
                             <span className="checkout-payment-tag">
@@ -495,10 +492,7 @@ const Checkout = () => {
                     <section className="checkout-card checkout-review-card">
                         <div className="checkout-review-heading">
                             <div>
-                                <p className="checkout-eyebrow">
-                                    YOUR ORDER
-                                </p>
-
+                                <p className="checkout-eyebrow">YOUR ORDER</p>
                                 <h2>Order review</h2>
                             </div>
 
@@ -506,77 +500,66 @@ const Checkout = () => {
                         </div>
 
                         <div className="checkout-review-items">
-                            {items.map((item) => (
-                                <div
-                                    className="checkout-review-item"
-                                    key={item.product._id}
-                                >
-                                    <div className="checkout-review-image">
-                                        <img
-                                            src={item.product.image}
-                                            alt={item.product.name}
-                                        />
+                            {items.map((item) => {
+                                const price =
+                                    Number(item.product.price || 0) *
+                                    Number(item.quantity || 0);
 
-                                        <span>{item.quantity}</span>
-                                    </div>
+                                return (
+                                    <div
+                                        className="checkout-review-item"
+                                        key={item.product._id}
+                                    >
+                                        <div className="checkout-review-image">
+                                            <img
+                                                src={item.product.image}
+                                                alt={item.product.name}
+                                            />
+                                            <span>{item.quantity}</span>
+                                        </div>
 
-                                    <div className="checkout-review-details">
-                                        <strong>
-                                            {item.product.name}
+                                        <div className="checkout-review-details">
+                                            <strong>{item.product.name}</strong>
+                                            <small>
+                                                {item.product.category}
+                                            </small>
+                                        </div>
+
+                                        <strong className="checkout-review-price">
+                                            {formatMoney(price)}
                                         </strong>
-
-                                        <small>
-                                            {item.product.category}
-                                        </small>
                                     </div>
-
-                                    <strong className="checkout-review-price">
-                                        {money(
-                                            Number(
-                                                item.product.price || 0
-                                            ) *
-                                                Number(
-                                                    item.quantity || 0
-                                                )
-                                        )}
-                                    </strong>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
 
                         <div className="checkout-summary-list">
                             <div>
                                 <span>Subtotal</span>
-
-                                <strong>
-                                    {money(subtotal)}
-                                </strong>
+                                <strong>{formatMoney(subtotal)}</strong>
                             </div>
                         </div>
 
                         <div className="checkout-summary-total">
                             <div>
                                 <span>Total</span>
-
-                                <strong>
-                                    {money(subtotal)}
-                                </strong>
+                                <strong>{formatMoney(subtotal)}</strong>
                             </div>
 
                             <small>
-                                Final payment amount is generated
-                                by the server.
+                                Final payment amount is generated by the server.
                             </small>
                         </div>
 
                         <button
                             className="checkout-primary-button checkout-place-button"
+                            type="submit"
                             disabled={submitting}
                         >
                             {submitting ? (
                                 <>
                                     <span className="checkout-button-spinner"></span>
-                                    Creating order...
+                                    Opening payment...
                                 </>
                             ) : (
                                 <>
@@ -604,41 +587,42 @@ const Field = ({
     error,
     placeholder,
     maxLength,
+    autoComplete,
     full
-}) => {
-    return (
-        <div
-            className={
-                full
-                    ? "checkout-field checkout-field-full"
-                    : "checkout-field"
+}) => (
+    <div
+        className={
+            full
+                ? "checkout-field checkout-field-full"
+                : "checkout-field"
+        }
+    >
+        <label htmlFor={name}>{label}</label>
+
+        <input
+            id={name}
+            name={name}
+            type={name === "phone" ? "tel" : "text"}
+            inputMode={
+                name === "phone" || name === "pincode"
+                    ? "numeric"
+                    : undefined
             }
-        >
-            <label htmlFor={name}>{label}</label>
+            maxLength={maxLength}
+            value={value}
+            onChange={onChange}
+            placeholder={placeholder}
+            autoComplete={autoComplete}
+            aria-invalid={Boolean(error)}
+            aria-describedby={error ? `${name}-error` : undefined}
+        />
 
-            <input
-                id={name}
-                name={name}
-                type={name === "phone" ? "tel" : "text"}
-                inputMode={
-                    name === "phone" || name === "pincode"
-                        ? "numeric"
-                        : undefined
-                }
-                maxLength={maxLength}
-                value={value}
-                onChange={onChange}
-                placeholder={placeholder}
-                aria-invalid={Boolean(error)}
-            />
-
-            {error && (
-                <small className="field-error">
-                    {error}
-                </small>
-            )}
-        </div>
-    );
-};
+        {error && (
+            <small id={`${name}-error`} className="field-error">
+                {error}
+            </small>
+        )}
+    </div>
+);
 
 export default Checkout;
