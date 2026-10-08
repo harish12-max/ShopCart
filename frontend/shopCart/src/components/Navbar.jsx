@@ -1,43 +1,16 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import { useCart } from "../Context/CartContext";
 import axiosInstance from "../AxiosCall/axios";
 import "../styles/navbar.css";
 
-function Navbar() {
+const Navbar = () => {
     const { user, setUser } = useAuth();
     const { totalItems } = useCart();
     const [search, setSearch] = useState("");
     const location = useLocation();
     const navigate = useNavigate();
-
-    const handleLogout = async () => {
-        try {
-            await axiosInstance.post("/user/logout");
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setUser(null);
-            navigate("/login", { replace: true });
-        }
-    };
-
-    const handlechange = (e) => {
-        setSearch(e.target.value);
-    };
-
-    const handlesubmit = async (e) => {
-        e.preventDefault();
-
-        if (!search.trim()) return;
-
-        try {
-            navigate(`/products?search=${encodeURIComponent(search.trim())}`);
-        } catch (error) {
-            console.log(error);
-        }
-    };
 
     const profileName =
         user?.name ||
@@ -52,9 +25,35 @@ function Navbar() {
         location.pathname.startsWith("/orders") ||
         location.pathname === "/checkout";
 
+    const handleLogout = async () => {
+        try {
+            await axiosInstance.post("/user/logout");
+        } catch (error) {
+            console.error("Logout error:", error);
+        } finally {
+            setUser(null);
+            navigate("/login", { replace: true });
+        }
+    };
+
+    const handleSearch = (event) => {
+        event.preventDefault();
+
+        const query = search.trim();
+
+        if (!query) {
+            navigate("/products");
+            return;
+        }
+
+        navigate(
+            `/products?search=${encodeURIComponent(query)}`
+        );
+    };
+
     return (
         <nav className="app-navbar">
-            <Link to="/home" className="navbar-brand">
+            <Link to="/home" className="navbar-brand" aria-label="ShopCart home">
                 <span className="brand-icon">🛍️</span>
                 <span className="brand-name">ShopCart</span>
             </Link>
@@ -62,51 +61,68 @@ function Navbar() {
             <div className="navbar-links">
                 <Link
                     to="/home"
-                    className={isHomeActive ? "nav-link active" : "nav-link"}
+                    className={
+                        isHomeActive ? "nav-link active" : "nav-link"
+                    }
                 >
                     Home
                 </Link>
 
                 <Link
                     to="/products"
-                    className={isProductsActive ? "nav-link active" : "nav-link"}
+                    className={
+                        isProductsActive ? "nav-link active" : "nav-link"
+                    }
                 >
                     Products
                 </Link>
 
                 <Link
                     to="/wishlist"
-                    className={isWishlistActive ? "nav-link active" : "nav-link"}
+                    className={
+                        isWishlistActive ? "nav-link active" : "nav-link"
+                    }
                 >
                     Wishlist
                 </Link>
 
                 <Link
                     to="/orders"
-                    className={isOrdersActive ? "nav-link active" : "nav-link"}
+                    className={
+                        isOrdersActive ? "nav-link active" : "nav-link"
+                    }
                 >
                     My Orders
                 </Link>
 
                 <Link
                     to="/cart"
-                    className={isCartActive ? "nav-link active cart-nav-link" : "nav-link cart-nav-link"}
+                    className={
+                        isCartActive
+                            ? "nav-link active cart-nav-link"
+                            : "nav-link cart-nav-link"
+                    }
                 >
                     <span>Cart</span>
                     <span className="cart-count">({totalItems})</span>
                 </Link>
             </div>
 
-            <form className="navbar-search" onSubmit={handlesubmit}>
+            <form className="navbar-search" onSubmit={handleSearch}>
                 <input
-                    type="text"
+                    type="search"
                     placeholder="Search products or categories..."
                     name="search"
                     value={search}
-                    onChange={handlechange}
+                    onChange={(event) => setSearch(event.target.value)}
+                    aria-label="Search products"
                 />
 
-                <button type="submit" className="search-button">
+                <button
+                    type="submit"
+                    className="search-button"
+                    aria-label="Search"
+                >
                     <span className="search-icon">⌕</span>
                 </button>
             </form>
@@ -123,12 +139,16 @@ function Navbar() {
                     </div>
                 </div>
 
-                <button onClick={handleLogout} className="logout-btn">
+                <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="logout-btn"
+                >
                     Logout
                 </button>
             </div>
         </nav>
     );
-}
+};
 
 export default Navbar;
