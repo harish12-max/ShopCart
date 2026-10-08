@@ -46,49 +46,14 @@ const ACTIVE_STATUSES = [
 
 const getStatusTone = (status) => STATUS_TONES[status] || "neutral";
 const getPaymentTone = (status) => PAYMENT_TONES[status] || "warning";
-const getStatusLabel = (status) =>
-    STATUS_LABELS[status] || status || "Unknown";
-const getPaymentLabel = (status) =>
-    PAYMENT_LABELS[status] || status || "Unknown";
+const getStatusLabel = (status) => STATUS_LABELS[status] || status || "Unknown";
+const getPaymentLabel = (status) => PAYMENT_LABELS[status] || status || "Unknown";
 
 const getItemCount = (items = []) =>
     items.reduce(
         (sum, item) => sum + Number(item.quantity || 0),
         0
     );
-
-const loadRazorpay = (() => {
-    let promise;
-
-    return () => {
-        if (window.Razorpay) {
-            return Promise.resolve(true);
-        }
-
-        if (promise) {
-            return promise;
-        }
-
-        promise = new Promise((resolve) => {
-            const script = document.createElement("script");
-
-            script.src =
-                "https://checkout.razorpay.com/v1/checkout.js";
-            script.async = true;
-
-            script.onload = () => resolve(true);
-
-            script.onerror = () => {
-                promise = null;
-                resolve(false);
-            };
-
-            document.body.appendChild(script);
-        });
-
-        return promise;
-    };
-})();
 
 const Orders = () => {
     const navigate = useNavigate();
@@ -117,7 +82,7 @@ const Orders = () => {
                 setOrders([]);
                 setError(
                     requestError.response?.data?.message ||
-                        "Unable to load your orders right now."
+                    "Unable to load your orders right now."
                 );
             } finally {
                 setLoading(false);
@@ -185,7 +150,6 @@ const Orders = () => {
                     </div>
                 </div>
             )}
-
             {error && (
                 <div className="orders-error" role="alert">
                     <span>!</span>
@@ -222,17 +186,9 @@ const Orders = () => {
                 <div className="orders-list">
                     {filteredOrders.map((order) => {
                         const itemCount = getItemCount(order.items);
-                        const canRetryPayment =
-                            order.status === "PENDING_PAYMENT" &&
-                            ["PENDING", "FAILED"].includes(
-                                order.paymentStatus
-                            );
 
                         return (
-                            <article
-                                className="order-card"
-                                key={order._id}
-                            >
+                            <article className="order-card" key={order._id}>
                                 <div className="order-card-top">
                                     <div>
                                         <div className="order-card-id-row">
@@ -278,9 +234,7 @@ const Orders = () => {
                                                 />
 
                                                 <div>
-                                                    <strong>
-                                                        {item.name}
-                                                    </strong>
+                                                    <strong>{item.name}</strong>
                                                     <span>
                                                         Qty {item.quantity}
                                                     </span>
@@ -307,36 +261,16 @@ const Orders = () => {
                                         </span>
                                     </div>
 
-                                    <div className="order-card-actions">
-                                        {canRetryPayment && (
-                                            <RetryPaymentButton
-                                                orderId={order._id}
-                                                onSuccess={() => navigate(
-                                                    "/orders",
-                                                    {
-                                                        replace: true,
-                                                        state: {
-                                                            orderCreated: true
-                                                        }
-                                                    }
-                                                )}
-                                            />
-                                        )}
-
-                                        <button
-                                            className="orders-view-button"
-                                            type="button"
-                                            onClick={() =>
-                                                navigate(
-                                                    "/orders/" +
-                                                        order._id
-                                                )
-                                            }
-                                        >
-                                            View Details
-                                            <span>→</span>
-                                        </button>
-                                    </div>
+                                    <button
+                                        className="orders-view-button"
+                                        type="button"
+                                        onClick={() =>
+                                            navigate("/orders/" + order._id)
+                                        }
+                                    >
+                                        View Details
+                                        <span>→</span>
+                                    </button>
                                 </div>
                             </article>
                         );
@@ -347,146 +281,6 @@ const Orders = () => {
     );
 };
 
-const RetryPaymentButton = ({ orderId, onSuccess }) => {
-    const [submitting, setSubmitting] = useState(false);
-    const [error, setError] = useState("");
-
-    const handleRetry = async () => {
-        if (submitting) {
-            return;
-        }
-
-        setSubmitting(true);
-        setError("");
-
-        try {
-            const razorpayLoaded = await loadRazorpay();
-
-            if (!razorpayLoaded) {
-                throw new Error(
-                    "Unable to load Razorpay checkout. Please try again."
-                );
-            }
-
-            const response = await axiosInstance.post(
-                "/orders/" + orderId + "/retry-payment"
-            );
-
-            const {
-                orderId: retryOrderId,
-                razorpayOrderId,
-                amount,
-                currency,
-                keyId
-            } = response.data;
-
-            if (
-                !retryOrderId ||
-                !razorpayOrderId ||
-                !amount ||
-                !currency ||
-                !keyId
-            ) {
-                throw new Error(
-                    "Payment retry details are missing."
-                );
-            }
-
-            const razorpay = new window.Razorpay({
-                key: keyId,
-                amount,
-                currency,
-                name: "ShopCart",
-                description: "ShopCart Order Payment",
-                order_id: razorpayOrderId,
-                theme: {
-                    color: "#1f7a5c"
-                },
-                handler: async (paymentResponse) => {
-                    try {
-                        await axiosInstance.post(
-                            "/orders/verify-payment",
-                            {
-                                razorpay_order_id:
-                                    paymentResponse.razorpay_order_id,
-                                razorpay_payment_id:
-                                    paymentResponse.razorpay_payment_id,
-                                razorpay_signature:
-                                    paymentResponse.razorpay_signature
-                            }
-                        );
-
-                        onSuccess();
-                    } catch (verificationError) {
-                        console.error(
-                            "Retry payment verification error:",
-                            verificationError
-                        );
-
-                        setError(
-                            verificationError.response?.data?.message ||
-                                "Payment verification failed. Check your order status."
-                        );
-                    } finally {
-                        setSubmitting(false);
-                    }
-                },
-                modal: {
-                    ondismiss: () => {
-                        setSubmitting(false);
-                    }
-                }
-            });
-
-            razorpay.on("payment.failed", (paymentError) => {
-                console.error(
-                    "Retry payment failed:",
-                    paymentError
-                );
-
-                setSubmitting(false);
-                setError(
-                    paymentError.error?.description ||
-                        "Payment failed. Please try again."
-                );
-            });
-
-            razorpay.open();
-        } catch (requestError) {
-            console.error("Retry payment error:", requestError);
-
-            setError(
-                requestError.response?.data?.message ||
-                    requestError.message ||
-                    "Unable to restart payment."
-            );
-
-            setSubmitting(false);
-        }
-    };
-
-    return (
-        <div className="retry-payment-wrap">
-            <button
-                className="orders-retry-button"
-                type="button"
-                onClick={handleRetry}
-                disabled={submitting}
-            >
-                {submitting ? "Opening..." : "Retry Payment"}
-            </button>
-
-            {error && (
-                <span
-                    className="retry-payment-error"
-                    role="alert"
-                >
-                    {error}
-                </span>
-            )}
-        </div>
-    );
-};
 
 const OrderDetails = ({ orderId, onBack }) => {
     const [order, setOrder] = useState(null);
@@ -508,7 +302,7 @@ const OrderDetails = ({ orderId, onBack }) => {
                 setOrder(null);
                 setError(
                     requestError.response?.data?.message ||
-                        "Unable to load this order."
+                    "Unable to load this order."
                 );
             } finally {
                 setLoading(false);
@@ -580,7 +374,6 @@ const OrderDetails = ({ orderId, onBack }) => {
                                 <p className="orders-eyebrow">ITEMS</p>
                                 <h2>Order items</h2>
                             </div>
-
                             <span>{itemCount} items</span>
                         </div>
 
@@ -656,9 +449,7 @@ const OrderDetails = ({ orderId, onBack }) => {
 
                         <div className="orders-summary-row">
                             <span>Order amount</span>
-                            <span>
-                                {formatMoney(order.totalAmount)}
-                            </span>
+                            <span>{formatMoney(order.totalAmount)}</span>
                         </div>
 
                         <div className="orders-summary-divider"></div>
@@ -681,20 +472,6 @@ const OrderDetails = ({ orderId, onBack }) => {
                                 {payment}
                             </strong>
                         </div>
-
-                        {order.status === "PENDING_PAYMENT" &&
-                            ["PENDING", "FAILED"].includes(
-                                order.paymentStatus
-                            ) && (
-                                <div className="orders-detail-retry">
-                                    <RetryPaymentButton
-                                        orderId={order._id}
-                                        onSuccess={() =>
-                                            window.location.reload()
-                                        }
-                                    />
-                                </div>
-                            )}
                     </section>
 
                     <section className="orders-detail-card orders-timeline-card">
@@ -804,7 +581,6 @@ const Timeline = ({ active, label, note }) => (
         }
     >
         <span></span>
-
         <div>
             <strong>{label}</strong>
             <small>{note}</small>
