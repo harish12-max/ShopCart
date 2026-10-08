@@ -94,7 +94,8 @@ export const createOrder = async (req, res) => {
             orderId: order._id,
             razorpayOrderId: razorpayOrder.id,
             amount: razorpayOrder.amount,
-            currency: razorpayOrder.currency
+            currency: razorpayOrder.currency,
+            keyId: process.env.RAZORPAY_KEY_ID
         })
 
 
