@@ -10,7 +10,6 @@ function ProductDetails() {
     const navigate = useNavigate();
     const { isWishlisted, toggleWishlist } = useWishlist();
     const { addToCart } = useCart();
-
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [addingToCart, setAddingToCart] = useState(false);

@@ -2,6 +2,8 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
 import "../styles/cart.css";
+import { useState } from "react";
+
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -12,8 +14,8 @@ const Cart = () => {
         removeFromCart
     } = useCart();
 
-    const [actionId, setActionId] = React.useState(null);
-    const [error, setError] = React.useState("");
+    const [actionId, setActionId] = useState(null);
+    const [error, setError] = useState("");
 
     const totalItems = cart.reduce(
         (total, item) => total + item.quantity,
