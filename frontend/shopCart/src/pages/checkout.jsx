@@ -18,7 +18,11 @@ const money = (value) =>
 
 const Checkout = () => {
     const navigate = useNavigate();
-    const { cart, loading: cartLoading } = useCart();
+    const {
+        cart,
+        loading: cartLoading,
+        fetchCart
+    } = useCart();
 
     const [form, setForm] = useState(initialForm);
     const [errors, setErrors] = useState({});
@@ -98,6 +102,24 @@ const Checkout = () => {
         return Object.keys(nextErrors).length === 0;
     };
 
+    const loadRazorpay = () => {
+        return new Promise((resolve) => {
+            if (window.Razorpay) {
+                resolve(true);
+                return;
+            }
+
+            const script = document.createElement("script");
+
+            script.src =
+                "https://checkout.razorpay.com/v1/checkout.js";
+            script.onload = () => resolve(true);
+            script.onerror = () => resolve(false);
+
+            document.body.appendChild(script);
+        });
+    };
+
     const createPaymentOrder = async (event) => {
         event.preventDefault();
 
@@ -115,6 +137,14 @@ const Checkout = () => {
         setSubmitting(true);
 
         try {
+            const razorpayLoaded = await loadRazorpay();
+
+            if (!razorpayLoaded) {
+                throw new Error(
+                    "Unable to load Razorpay checkout."
+                );
+            }
+
             const response = await axiosInstance.post(
                 "/orders/create-payment-order",
                 {
@@ -129,20 +159,104 @@ const Checkout = () => {
                 }
             );
 
-            navigate("/orders", {
-                state: {
-                    orderCreated: true,
-                    orderId: response.data.orderId
+            const {
+                orderId,
+                razorpayOrderId,
+                amount,
+                currency,
+                keyId
+            } = response.data;
+
+            if (!razorpayOrderId || !keyId) {
+                throw new Error(
+                    "Razorpay order details are missing."
+                );
+            }
+
+            const options = {
+                key: keyId,
+                amount,
+                currency,
+                name: "ShopCart",
+                description: "ShopCart Order",
+                order_id: razorpayOrderId,
+
+                prefill: {
+                    name: form.fullName.trim(),
+                    contact: form.phone.trim()
+                },
+
+                theme: {
+                    color: "#1f7a5c"
+                },
+
+                handler: async (paymentResponse) => {
+                    try {
+                        await axiosInstance.post(
+                            "/orders/verify-payment",
+                            {
+                                razorpay_order_id:
+                                    paymentResponse.razorpay_order_id,
+                                razorpay_payment_id:
+                                    paymentResponse.razorpay_payment_id,
+                                razorpay_signature:
+                                    paymentResponse.razorpay_signature
+                            }
+                        );
+
+                        await fetchCart();
+
+                        navigate("/orders", {
+                            state: {
+                                orderCreated: true,
+                                orderId
+                            }
+                        });
+                    } catch (error) {
+                        console.log(error);
+
+                        setSubmitError(
+                            error.response?.data?.message ||
+                            "Payment verification failed. Please check your order status."
+                        );
+                    } finally {
+                        setSubmitting(false);
+                    }
+                },
+
+                modal: {
+                    ondismiss: () => {
+                        setSubmitting(false);
+                        setSubmitError(
+                            "Payment was cancelled. Your order is still pending payment."
+                        );
+                    }
                 }
+            };
+
+            const razorpay = new window.Razorpay(options);
+
+            razorpay.on("payment.failed", (paymentError) => {
+                console.log(paymentError);
+
+                setSubmitting(false);
+
+                setSubmitError(
+                    paymentError.error?.description ||
+                    "Payment failed. Please try again."
+                );
             });
+
+            razorpay.open();
         } catch (error) {
             console.log(error);
 
             setSubmitError(
                 error.response?.data?.message ||
-                "Unable to create your payment order."
+                error.message ||
+                "Unable to start the payment."
             );
-        } finally {
+
             setSubmitting(false);
         }
     };
@@ -473,8 +587,7 @@ const Checkout = () => {
                         </button>
 
                         <p className="checkout-secure-note">
-                            🔒 You'll be redirected to Razorpay
-                            for payment.
+                            🔒 Secure payment powered by Razorpay.
                         </p>
                     </section>
                 </aside>
