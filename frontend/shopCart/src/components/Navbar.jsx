@@ -48,6 +48,9 @@ function Navbar() {
     const isProductsActive = location.pathname.startsWith("/products");
     const isWishlistActive = location.pathname === "/wishlist";
     const isCartActive = location.pathname === "/cart";
+    const isOrdersActive =
+        location.pathname.startsWith("/orders") ||
+        location.pathname === "/checkout";
 
     return (
         <nav className="app-navbar">
@@ -76,6 +79,13 @@ function Navbar() {
                     className={isWishlistActive ? "nav-link active" : "nav-link"}
                 >
                     Wishlist
+                </Link>
+
+                <Link
+                    to="/orders"
+                    className={isOrdersActive ? "nav-link active" : "nav-link"}
+                >
+                    My Orders
                 </Link>
 
                 <Link
