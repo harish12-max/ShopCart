@@ -42,3 +42,47 @@
         transform: rotate(360deg);
     }
 }
+
+
+.orders-success {
+    max-width: 1150px;
+    margin: 0 auto 17px;
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    border: 1px solid #c9ded6;
+    border-radius: 10px;
+    background: #f0f9f5;
+    color: #176247;
+}
+
+.orders-success > span {
+    width: 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: #1f7a5c;
+    color: #fff;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.orders-success strong {
+    display: block;
+    font-size: 12px;
+}
+
+.orders-success p {
+    margin: 2px 0 0;
+    color: #5f756c;
+    font-size: 10px;
+}
+
+@media (max-width: 560px) {
+    .orders-success {
+        align-items: flex-start;
+    }
+}
