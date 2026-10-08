@@ -150,11 +150,6 @@ const Orders = () => {
                     </div>
                 </div>
             )}
-
-            {location.state?.orderCreated && (
-                <OrderSuccessCleaner />
-            )}
-
             {error && (
                 <div className="orders-error" role="alert">
                     <span>!</span>
@@ -286,19 +281,6 @@ const Orders = () => {
     );
 };
 
-const OrderSuccessCleaner = () => {
-    const navigate = useNavigate();
-    const location = useLocation();
-
-    useEffect(() => {
-        navigate(location.pathname, {
-            replace: true,
-            state: null
-        });
-    }, [location.pathname, navigate]);
-
-    return null;
-};
 
 const OrderDetails = ({ orderId, onBack }) => {
     const [order, setOrder] = useState(null);
