@@ -9,6 +9,8 @@ const Navbar = () => {
     const { user, setUser } = useAuth();
     const { totalItems } = useCart();
     const [search, setSearch] = useState("");
+    const [mobileOpen, setMobileOpen] = useState(false);
+
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -24,6 +26,10 @@ const Navbar = () => {
     const isOrdersActive =
         location.pathname.startsWith("/orders") ||
         location.pathname === "/checkout";
+
+    const closeMobileMenu = () => {
+        setMobileOpen(false);
+    };
 
     const handleLogout = async () => {
         try {
@@ -43,108 +49,169 @@ const Navbar = () => {
 
         if (!query) {
             navigate("/products");
+            closeMobileMenu();
             return;
         }
 
         navigate(
             `/products?search=${encodeURIComponent(query)}`
         );
+        closeMobileMenu();
     };
 
     return (
         <nav className="app-navbar">
-            <Link to="/home" className="navbar-brand" aria-label="ShopCart home">
-                <span className="brand-icon">🛍️</span>
-                <span className="brand-name">ShopCart</span>
-            </Link>
-
-            <div className="navbar-links">
+            <div className="navbar-main">
                 <Link
                     to="/home"
-                    className={
-                        isHomeActive ? "nav-link active" : "nav-link"
-                    }
+                    className="navbar-brand"
+                    aria-label="ShopCart home"
+                    onClick={closeMobileMenu}
                 >
-                    Home
+                    <span className="brand-icon">🛍️</span>
+                    <span className="brand-name">ShopCart</span>
                 </Link>
 
-                <Link
-                    to="/products"
+                <div
                     className={
-                        isProductsActive ? "nav-link active" : "nav-link"
+                        mobileOpen
+                            ? "navbar-menu open"
+                            : "navbar-menu"
                     }
                 >
-                    Products
-                </Link>
+                    <div className="navbar-links">
+                        <Link
+                            to="/home"
+                            className={
+                                isHomeActive
+                                    ? "nav-link active"
+                                    : "nav-link"
+                            }
+                            onClick={closeMobileMenu}
+                        >
+                            Home
+                        </Link>
 
-                <Link
-                    to="/wishlist"
-                    className={
-                        isWishlistActive ? "nav-link active" : "nav-link"
-                    }
-                >
-                    Wishlist
-                </Link>
+                        <Link
+                            to="/products"
+                            className={
+                                isProductsActive
+                                    ? "nav-link active"
+                                    : "nav-link"
+                            }
+                            onClick={closeMobileMenu}
+                        >
+                            Products
+                        </Link>
 
-                <Link
-                    to="/orders"
-                    className={
-                        isOrdersActive ? "nav-link active" : "nav-link"
-                    }
-                >
-                    My Orders
-                </Link>
+                        <Link
+                            to="/wishlist"
+                            className={
+                                isWishlistActive
+                                    ? "nav-link active"
+                                    : "nav-link"
+                            }
+                            onClick={closeMobileMenu}
+                        >
+                            Wishlist
+                        </Link>
 
-                <Link
-                    to="/cart"
-                    className={
-                        isCartActive
-                            ? "nav-link active cart-nav-link"
-                            : "nav-link cart-nav-link"
-                    }
-                >
-                    <span>Cart</span>
-                    <span className="cart-count">({totalItems})</span>
-                </Link>
-            </div>
+                        <Link
+                            to="/orders"
+                            className={
+                                isOrdersActive
+                                    ? "nav-link active"
+                                    : "nav-link"
+                            }
+                            onClick={closeMobileMenu}
+                        >
+                            My Orders
+                        </Link>
 
-            <form className="navbar-search" onSubmit={handleSearch}>
-                <input
-                    type="search"
-                    placeholder="Search products or categories..."
-                    name="search"
-                    value={search}
-                    onChange={(event) => setSearch(event.target.value)}
-                    aria-label="Search products"
-                />
+                        <Link
+                            to="/cart"
+                            className={
+                                isCartActive
+                                    ? "nav-link active cart-nav-link"
+                                    : "nav-link cart-nav-link"
+                            }
+                            onClick={closeMobileMenu}
+                        >
+                            <span>Cart</span>
+                            <span className="cart-count">
+                                ({totalItems})
+                            </span>
+                        </Link>
+                    </div>
 
-                <button
-                    type="submit"
-                    className="search-button"
-                    aria-label="Search"
-                >
-                    <span className="search-icon">⌕</span>
-                </button>
-            </form>
+                    <form
+                        className="navbar-search"
+                        onSubmit={handleSearch}
+                    >
+                        <input
+                            type="search"
+                            placeholder="Search products or categories..."
+                            name="search"
+                            value={search}
+                            onChange={(event) =>
+                                setSearch(event.target.value)
+                            }
+                            aria-label="Search products"
+                        />
 
-            <div className="navbar-profile">
-                <div className="profile-info">
-                    <span className="profile-avatar">
-                        {profileName.charAt(0).toUpperCase()}
-                    </span>
+                        <button
+                            type="submit"
+                            className="search-button"
+                            aria-label="Search"
+                        >
+                            <span className="search-icon">⌕</span>
+                        </button>
+                    </form>
 
-                    <div className="profile-text">
-                        <span className="profile-label">Signed in as</span>
-                        <span className="profile-name">{profileName}</span>
+                    <div className="navbar-profile">
+                        <div className="profile-info">
+                            <span className="profile-avatar">
+                                {profileName
+                                    .charAt(0)
+                                    .toUpperCase()}
+                            </span>
+
+                            <div className="profile-text">
+                                <span className="profile-label">
+                                    Signed in as
+                                </span>
+                                <span className="profile-name">
+                                    {profileName}
+                                </span>
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            onClick={handleLogout}
+                            className="logout-btn"
+                        >
+                            Logout
+                        </button>
                     </div>
                 </div>
 
                 <button
                     type="button"
-                    onClick={handleLogout}
-                    className="logout-btn"
+                    className="navbar-menu-button"
+                    aria-label={
+                        mobileOpen
+                            ? "Close navigation menu"
+                            : "Open navigation menu"
+                    }
+                    aria-expanded={mobileOpen}
+                    onClick={() =>
+                        setMobileOpen((open) => !open)
+                    }
                 >
-                    Logout
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
             </div>
         </nav>
