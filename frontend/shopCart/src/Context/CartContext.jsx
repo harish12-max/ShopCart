@@ -24,27 +24,42 @@ export const CartProvider = ({ children }) => {
     }, []);
 
     const addToCart = async (productId) => {
-        const response = await axiosInstance.post(`/cart/${productId}`);
+        const response = await axiosInstance.post(
+            `/cart/${productId}`
+        );
+
         await fetchCart();
+
         return response.data;
     };
 
     const updateQuantity = async (productId, quantity) => {
-        const response = await axiosInstance.patch(`/cart/${productId}`, {
-            quantity
-        });
+        const response = await axiosInstance.patch(
+            `/cart/${productId}`,
+            { quantity }
+        );
+
         await fetchCart();
+
         return response.data;
     };
 
     const removeFromCart = async (productId) => {
-        const response = await axiosInstance.delete(`/cart/${productId}`);
+        const response = await axiosInstance.delete(
+            `/cart/${productId}`
+        );
+
         await fetchCart();
+
         return response.data;
     };
 
+    const clearCart = () => {
+        setCart([]);
+    };
+
     const totalItems = cart.reduce(
-        (total, item) => total + item.quantity,
+        (total, item) => total + Number(item.quantity || 0),
         0
     );
 
@@ -58,7 +73,8 @@ export const CartProvider = ({ children }) => {
                 fetchCart,
                 addToCart,
                 updateQuantity,
-                removeFromCart
+                removeFromCart,
+                clearCart
             }}
         >
             {children}
