@@ -13,6 +13,8 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import PublicRoute from "./components/PublicRoute";
 import AuthenticatedLayout from "./components/AuthenticatedLayout";
 import WishList from "./pages/wishList";
+import Checkout from "./pages/checkout";
+import Orders from "./pages/orders";
 
 function App() {
     return (
@@ -38,6 +40,9 @@ function App() {
                             <Route path="/products/:id" element={<ProductDetails />} />
                             <Route path="/wishlist" element={<WishList />} />
                             <Route path="/cart" element={<Cart />} />
+                            <Route path="/checkout" element={<Checkout />} />
+                            <Route path="/orders" element={<Orders />} />
+                            <Route path="/orders/:id" element={<Orders />} />
                         </Route>
                     </Routes>
                 </BrowserRouter>
