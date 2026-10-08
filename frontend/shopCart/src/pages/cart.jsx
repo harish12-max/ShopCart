@@ -1,9 +1,8 @@
-import React from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../Context/CartContext";
+import { formatMoney } from "../utils/formatters";
 import "../styles/cart.css";
-import { useState } from "react";
-
 
 const Cart = () => {
     const navigate = useNavigate();
@@ -17,15 +16,30 @@ const Cart = () => {
     const [actionId, setActionId] = useState(null);
     const [error, setError] = useState("");
 
-    const totalItems = cart.reduce(
-        (total, item) => total + item.quantity,
-        0
+    const validItems = useMemo(
+        () => cart.filter((item) => item?.product),
+        [cart]
     );
 
-    const subtotal = cart.reduce(
-        (total, item) =>
-            total + (item.product?.price || 0) * item.quantity,
-        0
+    const totalItems = useMemo(
+        () =>
+            validItems.reduce(
+                (total, item) => total + Number(item.quantity || 0),
+                0
+            ),
+        [validItems]
+    );
+
+    const subtotal = useMemo(
+        () =>
+            validItems.reduce(
+                (total, item) =>
+                    total +
+                    Number(item.product.price || 0) *
+                        Number(item.quantity || 0),
+                0
+            ),
+        [validItems]
     );
 
     const handleQuantity = async (productId, quantity) => {
@@ -34,10 +48,10 @@ const Cart = () => {
 
         try {
             await updateQuantity(productId, quantity);
-        } catch (error) {
-            console.log(error);
+        } catch (requestError) {
+            console.error(requestError);
             setError(
-                error.response?.data?.message ||
+                requestError.response?.data?.message ||
                 "Unable to update cart quantity."
             );
         } finally {
@@ -51,10 +65,10 @@ const Cart = () => {
 
         try {
             await removeFromCart(productId);
-        } catch (error) {
-            console.log(error);
+        } catch (requestError) {
+            console.error(requestError);
             setError(
-                error.response?.data?.message ||
+                requestError.response?.data?.message ||
                 "Unable to remove product from cart."
             );
         } finally {
@@ -84,34 +98,42 @@ const Cart = () => {
 
                 <button
                     className="cart-continue-button"
+                    type="button"
                     onClick={() => navigate("/products")}
                 >
                     Continue Shopping
                 </button>
             </div>
 
-            {error && <div className="cart-error">{error}</div>}
+            {error && (
+                <div className="cart-error" role="alert">
+                    {error}
+                </div>
+            )}
 
-            {cart.length === 0 ? (
+            {validItems.length === 0 ? (
                 <div className="empty-cart">
                     <div className="empty-cart-icon">🛒</div>
                     <h2>Your cart is empty</h2>
-                    <p>Add products to your cart and they will appear here.</p>
-                    <button onClick={() => navigate("/products")}>
+                    <p>
+                        Add products to your cart and they will appear here.
+                    </p>
+                    <button
+                        type="button"
+                        onClick={() => navigate("/products")}
+                    >
                         Browse Products
                     </button>
                 </div>
             ) : (
                 <div className="cart-layout">
-                    <section className="cart-items">
-                        {cart.map((item) => {
+                    <section className="cart-items" aria-label="Cart items">
+                        {validItems.map((item) => {
                             const product = item.product;
-
-                            if (!product) {
-                                return null;
-                            }
-
-                            const itemTotal = product.price * item.quantity;
+                            const quantity = Number(item.quantity || 0);
+                            const price = Number(product.price || 0);
+                            const stock = Number(product.stock || 0);
+                            const itemTotal = price * quantity;
                             const busy = actionId === product._id;
 
                             return (
@@ -132,43 +154,58 @@ const Cart = () => {
                                         </span>
 
                                         <h2>{product.name}</h2>
+
                                         <p className="cart-item-price">
-                                            ₹{product.price.toLocaleString("en-IN")}
+                                            {formatMoney(price)}
                                         </p>
 
                                         <div className="cart-item-footer">
-                                            <div className="quantity-control">
+                                            <div
+                                                className="quantity-control"
+                                                aria-label={
+                                                    "Quantity for " +
+                                                    product.name
+                                                }
+                                            >
                                                 <button
+                                                    type="button"
                                                     onClick={() =>
                                                         handleQuantity(
                                                             product._id,
-                                                            item.quantity - 1
+                                                            quantity - 1
                                                         )
                                                     }
                                                     disabled={
-                                                        busy ||
-                                                        item.quantity <= 1
+                                                        busy || quantity <= 1
                                                     }
-                                                    aria-label="Decrease quantity"
+                                                    aria-label={
+                                                        "Decrease " +
+                                                        product.name +
+                                                        " quantity"
+                                                    }
                                                 >
                                                     −
                                                 </button>
 
-                                                <span>{item.quantity}</span>
+                                                <span>{quantity}</span>
 
                                                 <button
+                                                    type="button"
                                                     onClick={() =>
                                                         handleQuantity(
                                                             product._id,
-                                                            item.quantity + 1
+                                                            quantity + 1
                                                         )
                                                     }
                                                     disabled={
                                                         busy ||
-                                                        item.quantity >=
-                                                            product.stock
+                                                        quantity >= stock
                                                     }
-                                                    aria-label="Increase quantity"
+                                                    aria-label={
+                                                        "Increase " +
+                                                        product.name +
+                                                        " quantity"
+                                                    }
                                                 >
                                                     +
                                                 </button>
@@ -176,6 +213,7 @@ const Cart = () => {
 
                                             <button
                                                 className="cart-remove-button"
+                                                type="button"
                                                 onClick={() =>
                                                     handleRemove(product._id)
                                                 }
@@ -189,7 +227,7 @@ const Cart = () => {
                                     </div>
 
                                     <div className="cart-item-total">
-                                        ₹{itemTotal.toLocaleString("en-IN")}
+                                        {formatMoney(itemTotal)}
                                     </div>
                                 </article>
                             );
@@ -207,9 +245,7 @@ const Cart = () => {
 
                         <div className="summary-row summary-subtotal">
                             <span>Subtotal</span>
-                            <strong>
-                                ₹{subtotal.toLocaleString("en-IN")}
-                            </strong>
+                            <strong>{formatMoney(subtotal)}</strong>
                         </div>
 
                         <div className="summary-divider"></div>
@@ -221,6 +257,7 @@ const Cart = () => {
 
                         <button
                             className="checkout-button"
+                            type="button"
                             onClick={() => navigate("/checkout")}
                         >
                             Proceed to Checkout
