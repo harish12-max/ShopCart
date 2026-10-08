@@ -219,7 +219,10 @@ const Cart = () => {
                             checkout.
                         </p>
 
-                        <button className="checkout-button" disabled>
+                        <button
+                            className="checkout-button"
+                            onClick={() => navigate("/checkout")}
+                        >
                             Proceed to Checkout
                         </button>
                     </aside>
