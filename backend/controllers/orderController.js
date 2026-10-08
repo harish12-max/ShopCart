@@ -160,3 +160,47 @@ export const verifyPayment = async (req, res) => {
 }
 
 
+
+export const getOrders = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        const orders = await Order.find({
+            user: userId
+        }).sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            message: "Orders fetched successfully",
+            orders
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: "Internal Server Error" })
+    }
+}
+
+
+export const getOrderId = async(req, res) =>{
+    try {
+        const {orderId} = req.params
+        const userId = req.user._id
+        
+        const order = await Order.findOne({
+            _id: orderId,
+            user: userId
+        });
+
+        if (!order) {
+            return res.status(404).json({message: "Order not found"});
+        }
+
+        return res.status(200).json({message: "Order fetched successfully",order});
+        
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({message:"Internal Server Error"})
+    }
+}
+

@@ -4,7 +4,7 @@ import userRoutes from "./routes/userRoutes.js"
 import productRoutes from "./routes/productRoutes.js";
 import wishListRoutes from "./routes/wishListRoutes.js"
 import cartRoutes from "./routes/cartRoutes.js";
-// import orderRoutes from "./routes/orderRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv"
 import cors from "cors"
@@ -38,7 +38,7 @@ app.use("/user" , userRoutes)
 app.use("/product" , productRoutes)
 app.use("/wishlist" , wishListRoutes)
 app.use('/cart' , cartRoutes)
-// app.use("/order" ,orderRoutes)
+app.use("/order" ,orderRoutes)
 
 
 app.listen(port ,() =>{
