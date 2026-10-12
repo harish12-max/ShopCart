@@ -163,7 +163,7 @@ const Orders = () => {
                     <span>orders</span>
                 </div>
 
-                <div className="orders-filter-tabs">
+                {/* <div className="orders-filter-tabs">
                     {["All", "Active", "Completed"].map((name) => (
                         <button
                             key={name}
@@ -174,7 +174,7 @@ const Orders = () => {
                             {name}
                         </button>
                     ))}
-                </div>
+                </div> */}
             </div>
 
             {filteredOrders.length === 0 ? (
