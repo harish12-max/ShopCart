@@ -8,6 +8,7 @@ function Signup() {
     const [ form, setForm ] = useState({name:"" ,email:"", password:"", phone:""});
     const [ error ,setError] = useState("");
     const [ loader , setLoader] = useState(false)
+    const [showPassword, setShowPassword] = useState(false)
     const navigate = useNavigate()
 
     const handleChange = (e) => {
@@ -87,7 +88,7 @@ function Signup() {
                             <input
                                 type="email"
                                 name="email"
-                                autoComplete="new-email"
+                                autoComplete="email"
                                 value={form.email}
                                 placeholder="Enter your Gmail"
                                 onChange={handleChange}
@@ -97,13 +98,24 @@ function Signup() {
                         <div className="input-group">
                             <label>Password</label>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 name="password"
                                 autoComplete="new-password"
                                 value={form.password}
                                 placeholder="Create your password"
                                 onChange={handleChange}
+                                aria-describedby="signup-password-toggle"
                             />
+                            <button
+                                id="signup-password-toggle"
+                                className="password-toggle"
+                                type="button"
+                                onClick={() => setShowPassword((visible) => !visible)}
+                                aria-label={showPassword ? "Hide password" : "Show password"}
+                                aria-pressed={showPassword}
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </button>
                         </div>
 
                         <div className="input-group">
