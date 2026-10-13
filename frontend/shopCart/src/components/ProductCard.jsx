@@ -10,6 +10,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
     const { addToCart } = useCart();
     const [addingToCart, setAddingToCart] = useState(false);
     const [cartError, setCartError] = useState("");
+    const [wishlistMessage, setWishlistMessage] = useState("");
 
     const wishlisted = isWishlisted(product._id);
 
@@ -18,14 +19,19 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
     };
 
     const handleWishlistToggle = async () => {
+        setWishlistMessage("");
         try {
             await toggleWishlist(product._id);
 
             if (wishlisted && onRemove) {
                 onRemove(product._id);
+            } else {
+                setWishlistMessage("Added to wishlist.");
             }
         } catch (error) {
-            console.log(error);
+            setWishlistMessage(
+                error.response?.data?.message || "Unable to update your wishlist."
+            );
         }
     };
 
@@ -37,8 +43,8 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
 
         try {
             await addToCart(product._id);
+            setCartError("Added to cart.");
         } catch (error) {
-            console.log(error);
             setCartError(
                 error.response?.data?.message ||
                 "Unable to add to cart."
@@ -115,7 +121,10 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
                 </div>
 
                 {cartError && variant === "products" && (
-                    <p className="product-card-cart-error">{cartError}</p>
+                    <p className="product-card-cart-error" role="status" aria-live="polite">{cartError}</p>
+                )}
+                {wishlistMessage && (
+                    <p className="product-card-cart-error" role="status" aria-live="polite">{wishlistMessage}</p>
                 )}
 
                 {variant === "wishlist" ? (
