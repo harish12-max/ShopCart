@@ -2,6 +2,12 @@
 
 A full-stack e-commerce application built with **React, Vite, Node.js, Express, and MongoDB**. ShopCart includes authentication, product browsing and search, cart and wishlist management, and an order checkout flow integrated with Razorpay.
 
+## Live Demo
+
+- **Frontend (Vercel):** [https://shop-cart-bay-six.vercel.app](https://shop-cart-bay-six.vercel.app)
+- **Backend API (Render):** [https://shopcart-bklx.onrender.com](https://shopcart-bklx.onrender.com)
+- **Backend health check:** [https://shopcart-bklx.onrender.com/health](https://shopcart-bklx.onrender.com/health)
+
 > **Important:** This is a development project. Review the security and deployment checklist before exposing it publicly or accepting real payments. The current frontend API URL and backend CORS origin are configured for local development, and payment/inventory handling needs additional hardening before production use.
 
 ## Features
