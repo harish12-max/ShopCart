@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../styles/login.css";
-import {Link, useNavigate } from "react-router-dom"
+import {Link, useLocation, useNavigate } from "react-router-dom"
 import axiosInstance from "../AxiosCall/axios";
 import { useAuth } from "../Context/AuthContext";
 import AlertMessage from "../components/AlertMessage";
@@ -13,6 +13,8 @@ function Login() {
     const {setUser} = useAuth()
 
     const navigate = useNavigate()
+    const location = useLocation()
+    const successMessage = location.state?.successMessage || ""
 
     const handleChange =(e)=>{
         setForm((prev) =>({...prev , [e.target.name]:e.target.value}))
@@ -56,9 +58,12 @@ function Login() {
             <div className="login-glow login-cyan"></div>
 
             <AlertMessage
-                type="error"
-                message={error}
-                onClose={() => setError("")}
+                type={successMessage ? "success" : "error"}
+                message={successMessage || error}
+                onClose={() => {
+                    setError("")
+                    if (successMessage) navigate(location.pathname, { replace: true, state: {} })
+                }}
             />
 
             <div className="login-container">
