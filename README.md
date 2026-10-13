@@ -2,7 +2,7 @@
 
 A full-stack e-commerce application built with **React, Vite, Node.js, Express, and MongoDB**. ShopCart includes authentication, product browsing and search, cart and wishlist management, and an order checkout flow integrated with Razorpay.
 
-> **Important:** This is a development project. Review the security and deployment checklist before exposing it publicly or accepting real payments. The current frontend API URL and backend CORS origin are configured for local development, and payment/inventory handling needs additional hardening before production use.
+> **Important:** Configure the environment variables for your hosting providers and complete the payment/inventory regression checks before accepting real payments. Use Razorpay test mode during validation.
 
 ## Features
 
@@ -76,7 +76,7 @@ cd backend
 npm install
 ```
 
-Create a file named `backend/.env` and add your own credentials:
+Copy `backend/.env.example` to `backend/.env` and fill in your own values. The example includes all environment variable names expected by the application:
 
 ```dotenv
 # MongoDB connection string
@@ -100,8 +100,10 @@ Use the **exact variable names** above because the backend configuration reads t
 Start the backend from the `backend` directory:
 
 ```bash
-node index.js
+npm start
 ```
+
+For local development with automatic restarts, use `npm run dev`. The server listens on `process.env.PORT` when the host provides one, otherwise it defaults to port `8082`. MongoDB must connect successfully before the server begins listening. The health endpoint is `GET /health`.
 
 The current backend listens on `http://localhost:8082`. Check the terminal for the server and database connection messages. The backend package currently does not define a standard `start` script.
 
@@ -117,7 +119,7 @@ npm run dev
 
 Open [http://localhost:5173](http://localhost:5173) in your browser. Keep the backend running in the first terminal.
 
-The frontend Axios instance currently uses `http://localhost:8082`, and the backend CORS configuration currently allows `http://localhost:5173`. These settings work for the current local-development setup, not for a deployed environment.
+Copy `frontend/shopCart/.env.example` to `frontend/shopCart/.env` for local development. Set `VITE_API_BASE_URL` to your backend origin (for example, `http://localhost:8082`). On the backend, set `FRONTEND_URL` to the exact frontend origin; multiple origins can be comma-separated. For deployment, set these values in the hosting dashboards rather than committing `.env` files.
 
 ### 4. Build the frontend
 
@@ -170,10 +172,10 @@ Do not use live payment keys until you have completed the security and deploymen
 
 ## Pre-deployment checklist
 
-- [ ] **Frontend API URL:** Replace the hard-coded `http://localhost:8082` Axios base URL with an environment-configured API origin, such as `VITE_API_BASE_URL`, and configure it in the frontend hosting environment.
-- [ ] **CORS:** Configure the backend to allow the exact deployed frontend origin. Keep credentialed requests configured correctly; do not combine credentialed requests with a wildcard origin.
-- [ ] **Cookies:** Configure production cookies for HTTPS, including `Secure`, an appropriate `SameSite` policy, and consistent options when clearing cookies. Cross-site cookies commonly require `SameSite=None; Secure`; test in the actual hosting setup and target browsers.
-- [ ] **Port and startup:** Read the listening port from `process.env.PORT` where required by the hosting provider, and make startup/readiness behavior reflect whether MongoDB has connected successfully.
+- [ ] **Frontend API URL:** Set `VITE_API_BASE_URL` to the deployed backend origin in the frontend hosting environment.
+- [ ] **CORS:** Set `FRONTEND_URL` to the exact deployed frontend origin. Keep credentialed requests configured correctly; do not combine credentialed requests with a wildcard origin.
+- [ ] **Cookies:** Production authentication cookies use `HttpOnly`, `Secure`, and `SameSite=None`; test sign-in persistence and logout over HTTPS in the actual hosting setup.
+- [ ] **Port and startup:** The backend uses `process.env.PORT`, exposes `/health`, and waits for MongoDB before listening. Verify the hosting provider health-check settings.
 - [ ] **Secrets:** Store credentials in the hosting provider's secret manager. Rotate any secret that has ever been committed or exposed.
 - [ ] **Security controls:** Add validation, rate limiting for authentication/payment routes, secure headers, safe production error responses, and appropriate logging.
 - [ ] **Authorization:** Restrict product creation to an authorized admin/owner role instead of any authenticated user.
@@ -183,7 +185,7 @@ Do not use live payment keys until you have completed the security and deploymen
 - [ ] **Testing:** Replace the placeholder backend test script with real tests for authentication, product access, cart, wishlist, order creation, payment verification, and inventory behavior.
 - [ ] **Build and lint:** Run `npm run build` and `npm run lint` in `frontend/shopCart`; resolve any relevant failures before deployment.
 - [ ] **End-to-end deployment test:** Test over HTTPS, including sign-in persistence, refreshes on nested routes, CORS, payment success/failure/cancellation, retry behavior, stock updates, and cart clearing.
-- [ ] **SPA routing:** Configure frontend hosting to serve `index.html` for client-side routes so direct navigation and refreshes on pages such as order details work.
+- [ ] **SPA routing:** `frontend/shopCart/vercel.json` rewrites frontend routes to `index.html`; verify direct navigation and refreshes on nested routes after deployment.
 - [ ] **Project presentation:** Add screenshots, a demo link when available, and a license file if you want to define reuse/distribution terms.
 
 ## Known limitations
