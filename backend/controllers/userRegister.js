@@ -3,7 +3,10 @@ import bcrypt from "bcrypt";
 import gentoken from "../utils/gentoken.js";
 
 const cookieOption = {
-  httpOnly: true
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  path: "/"
 };
 
 const safeUser = (user) => {
@@ -90,7 +93,7 @@ export const getUser = async (req, res) => {
 };
 
 export const logoutUser = async (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", cookieOption);
 
   return res.status(200).json({
     message: "User Logout"
