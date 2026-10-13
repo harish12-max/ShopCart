@@ -2,8 +2,15 @@ import User from "../modules/usermodel.js";
 import bcrypt from "bcrypt";
 import gentoken from "../utils/gentoken.js";
 
-const cookieOption = {
-  httpOnly: true
+
+const isProduction = process.env.NODE_ENV === "production";
+
+const cookieOptions = {
+  httpOnly: true,
+  sameSite: isProduction ? "none" : "lax",
+  secure: isProduction,
+  path: "/",
+  maxAge: 7 * 24 * 60 * 60 * 1000
 };
 
 const safeUser = (user) => {
@@ -40,7 +47,7 @@ export const userRegister = async (req, res) => {
     });
 
     const token = gentoken(newUser._id);
-    res.cookie("token", token, cookieOption);
+    res.cookie("token", token, cookieOptions);
 
     return res.status(200).json({
       message: "Registration Successful",
@@ -73,7 +80,7 @@ export const userLogin = async (req, res) => {
     }
 
     const token = gentoken(emailExist._id);
-    res.cookie("token", token, cookieOption);
+    res.cookie("token", token, cookieOptions);
 
     return res.status(200).json({
       message: "Login Successful",
@@ -90,7 +97,12 @@ export const getUser = async (req, res) => {
 };
 
 export const logoutUser = async (req, res) => {
-  res.clearCookie("token");
+  res.clearCookie("token", {
+    httpOnly: true,
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
+    path: "/"
+  });
 
   return res.status(200).json({
     message: "User Logout"
