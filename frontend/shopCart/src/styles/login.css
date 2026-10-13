@@ -217,6 +217,11 @@
     border-radius: 4px;
 }
 
+.input-group:has(.password-toggle) { position: relative; }
+.input-group:has(.password-toggle) input { padding-right: 72px; }
+.password-toggle { position: absolute; right: 12px; bottom: 12px; border: 0; background: transparent; color: #176247; font: inherit; font-size: 12px; font-weight: 800; cursor: pointer; }
+.password-toggle:focus-visible { outline: 2px solid #1f7a5c; outline-offset: 3px; border-radius: 4px; }
+
 .input-group input::placeholder {
     color: #a3a09a;
 }
