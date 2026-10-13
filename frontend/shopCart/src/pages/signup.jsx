@@ -34,7 +34,7 @@ function Signup() {
         try {
             await axiosInstance.post("/user/signup" , form)
             setError("")
-            navigate("/login")
+            navigate("/login", { state: { successMessage: "Account created successfully. Please log in." } })
         } catch (error) {
             const message =
                 error.response?.data?.message ||
