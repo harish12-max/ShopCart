@@ -132,13 +132,32 @@ export const verifyPayment = async (req, res) => {
             return res.status(400).json({ message: "Invalid payment signature" });
         }
 
-        order.paymentStatus = "PAID";
-        order.status = "PLACED";
-        order.razorpayPaymentId = razorpay_payment_id;
+        // Claim the paid transition atomically so duplicate callbacks cannot
+        // decrement inventory more than once for the same order.
+        const paidOrder = await Order.findOneAndUpdate(
+            { _id: order._id, paymentStatus: { $ne: "PAID" } },
+            {
+                $set: {
+                    paymentStatus: "PAID",
+                    status: "PLACED",
+                    razorpayPaymentId: razorpay_payment_id
+                }
+            },
+            { new: true }
+        );
 
-        await order.save();
+        if (!paidOrder) {
+            const latestOrder = await Order.findById(order._id);
+            if (latestOrder?.paymentStatus === "PAID") {
+                return res.status(200).json({
+                    message: "Payment already verified",
+                    orderId: latestOrder._id
+                });
+            }
+            return res.status(409).json({ message: "Payment is already being processed. Please check your order status." });
+        }
 
-        for (const item of order.items) {
+        for (const item of paidOrder.items) {
             await product.findByIdAndUpdate(
                 item.product,
                 { $inc: { stock: -item.quantity } }
