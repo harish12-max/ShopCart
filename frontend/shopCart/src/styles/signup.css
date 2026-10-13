@@ -107,6 +107,33 @@
     transition: border-color .2s, box-shadow .2s, background .2s;
 }
 
+.signup-card .input-group:has(.password-toggle) {
+    position: relative;
+}
+
+.signup-card .input-group:has(.password-toggle) input {
+    padding-right: 72px;
+}
+
+.signup-card .password-toggle {
+    position: absolute;
+    right: 12px;
+    bottom: 11px;
+    border: 0;
+    background: transparent;
+    color: #176247;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.signup-card .password-toggle:focus-visible {
+    outline: 2px solid #1f7a5c;
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
 .signup-card .input-group input:focus {
     border-color: #1f7a5c;
     background: white;
