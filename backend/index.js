@@ -13,7 +13,7 @@ import cors from "cors";
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || process.env.port || 8082;
+const port = process.env.PORT || process.env.port || 8082
 
 app.use(express.json());
 app.use(cookieParser());
