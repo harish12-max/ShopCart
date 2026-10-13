@@ -126,8 +126,11 @@ export const verifyPayment = async (req, res) => {
         const expectedSignature = crypto.createHmac("sha256", process.env.RAZORPAY_KEY_SECRET).update(body).digest("hex");
 
         if (expectedSignature !== razorpay_signature) {
-            order.paymentStatus = "FAILED";
-            await order.save();
+            // Never allow a later invalid callback to downgrade a paid order.
+            if (order.paymentStatus !== "PAID") {
+                order.paymentStatus = "FAILED";
+                await order.save();
+            }
 
             return res.status(400).json({ message: "Invalid payment signature" });
         }
