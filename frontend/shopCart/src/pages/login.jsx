@@ -9,6 +9,7 @@ function Login() {
     const [form ,setForm] = useState({email:"",password:""});
     const [loader , setLoader] = useState(false)
     const [error , setError] = useState("")
+    const [showPassword, setShowPassword] = useState(false)
     const {setUser} = useAuth()
 
     const navigate = useNavigate()
@@ -108,7 +109,7 @@ function Login() {
                             <input
                                 type="email"
                                 name="email"
-                                autoComplete="new-email"
+                                autoComplete="email"
                                 value={form.email}
                                 placeholder="Enter your Gmail"
                                 onChange={handleChange}
@@ -118,13 +119,24 @@ function Login() {
                         <div className="input-group">
                             <label>Password</label>
                             <input
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 name="password"
-                                autoComplete="new-password"
+                                autoComplete="current-password"
                                 value={form.password}
                                 placeholder="Enter your password"
                                 onChange={handleChange}
+                                aria-describedby="login-password-toggle"
                             />
+                            <button
+                                id="login-password-toggle"
+                                className="password-toggle"
+                                type="button"
+                                onClick={() => setShowPassword((visible) => !visible)}
+                                aria-label={showPassword ? "Hide password" : "Show password"}
+                                aria-pressed={showPassword}
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </button>
                         </div>
 
                         <button
