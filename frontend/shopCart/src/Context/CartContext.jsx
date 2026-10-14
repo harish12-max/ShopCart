@@ -30,9 +30,30 @@ export const CartProvider = ({ children }) => {
         fetchCart();
     }, [fetchCart]);
 
-    const addToCart = useCallback(async (productId) => {
+    const addToCart = useCallback(async (productId, productData) => {
         const response = await axiosInstance.post(`/cart/${productId}`);
-        await fetchCart();
+
+        if (!productData?._id) {
+            await fetchCart();
+            return response.data;
+        }
+
+        setCart((currentCart) => {
+            const existing = currentCart.find(
+                (item) => item?.product?._id?.toString() === productId.toString()
+            );
+
+            if (existing) {
+                return currentCart.map((item) =>
+                    item?.product?._id?.toString() === productId.toString()
+                        ? { ...item, quantity: Number(item.quantity || 0) + 1 }
+                        : item
+                );
+            }
+
+            return [...currentCart, { product: productData, quantity: 1 }];
+        });
+
         return response.data;
     }, [fetchCart]);
 
@@ -41,15 +62,29 @@ export const CartProvider = ({ children }) => {
             `/cart/${productId}`,
             { quantity }
         );
-        await fetchCart();
+
+        setCart((currentCart) =>
+            currentCart.map((item) =>
+                item?.product?._id?.toString() === productId.toString()
+                    ? { ...item, quantity }
+                    : item
+            )
+        );
+
         return response.data;
-    }, [fetchCart]);
+    }, []);
 
     const removeFromCart = useCallback(async (productId) => {
         const response = await axiosInstance.delete(`/cart/${productId}`);
-        await fetchCart();
+
+        setCart((currentCart) =>
+            currentCart.filter(
+                (item) => item?.product?._id?.toString() !== productId.toString()
+            )
+        );
+
         return response.data;
-    }, [fetchCart]);
+    }, []);
 
     const clearCart = useCallback(() => {
         setCart([]);

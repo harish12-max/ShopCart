@@ -70,9 +70,20 @@ export const productregister = async (req, res) => {
 
 export const getAllProduct = async (req, res) => {
     try {
-        const prods = await product
+        const requestedLimit = Number.parseInt(req.query.limit, 10);
+        const limit = Number.isInteger(requestedLimit) && requestedLimit > 0
+            ? Math.min(requestedLimit, 50)
+            : null;
+
+        let query = product
             .find()
             .select("name description category price image stock");
+
+        if (limit) {
+            query = query.limit(limit);
+        }
+
+        const prods = await query;
 
         return res.status(200).json({
             message: "Product From DB",

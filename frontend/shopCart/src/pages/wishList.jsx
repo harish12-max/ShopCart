@@ -1,38 +1,15 @@
-import React, { useEffect, useState } from "react";
-import axiosInstance from "../AxiosCall/axios";
 import ProductCard from "../components/ProductCard";
+import { useWishlist } from "../Context/WishlistContext";
 import "../styles/wishlist.css";
 
 const WishList = () => {
-    const [wishlist, setWishList] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
-
-    const fetchList = async () => {
-        setLoading(true);
-        setError("");
-
-        try {
-            const response = await axiosInstance.get("/wishlist/");
-            setWishList(response.data.wishList || []);
-        } catch (error) {
-            console.log(error);
-            setWishList([]);
-            setError("Unable to load your wishlist right now. Please try again.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        fetchList();
-    }, []);
+    const { wishlistProducts, loading, error } = useWishlist();
 
     return (
         <div className="wishlist-page">
             <div className="wishlist-header">
                 <h1>My Wishlist</h1>
-                <p>{wishlist.length} items saved</p>
+                <p>{wishlistProducts.length} items saved</p>
             </div>
 
             {loading ? (
@@ -45,18 +22,13 @@ const WishList = () => {
                     <h2>Something went wrong</h2>
                     <p>{error}</p>
                 </div>
-            ) : wishlist.length > 0 ? (
+            ) : wishlistProducts.length > 0 ? (
                 <div className="wishlist-grid">
-                    {wishlist.map((product) => (
+                    {wishlistProducts.map((product) => (
                         <ProductCard
                             key={product._id}
                             product={product}
                             variant="wishlist"
-                            onRemove={(productId) => {
-                                setWishList(prev =>
-                                    prev.filter(item => item._id !== productId)
-                                );
-                            }}
                         />
                     ))}
                 </div>
