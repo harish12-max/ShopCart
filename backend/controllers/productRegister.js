@@ -77,8 +77,7 @@ export const getAllProduct = async (req, res) => {
 
         let query = product
             .find()
-            .select("name description category price image stock")
-            .sort({ createdAt: -1 });
+            .select("name description category price image stock");
 
         if (limit) {
             query = query.limit(limit);
