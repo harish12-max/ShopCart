@@ -19,7 +19,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
 
     const handleWishlistToggle = async () => {
         try {
-            await toggleWishlist(product._id);
+            await toggleWishlist(product._id, product);
 
             if (wishlisted && onRemove) {
                 onRemove(product._id);
@@ -36,7 +36,7 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
         setCartError("");
 
         try {
-            await addToCart(product._id);
+            await addToCart(product._id, product);
         } catch (error) {
             console.log(error);
             setCartError(
@@ -54,6 +54,8 @@ const ProductCard = ({ product, variant = "products", onRemove }) => {
                 <img
                     src={product.image}
                     alt={product.name}
+                    loading="lazy"
+                    decoding="async"
                     className="product-card-image"
                 />
 
