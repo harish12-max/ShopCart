@@ -51,7 +51,7 @@ function ProductDetails() {
         setCartMessage("");
 
         try {
-            await addToCart(product._id);
+            await addToCart(product._id, product);
             setCartMessage("Added to cart successfully.");
         } catch (error) {
             console.log(error);
@@ -104,6 +104,9 @@ function ProductDetails() {
                     <img
                         src={product.image}
                         alt={product.name}
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="async"
                         className="product-details-image"
                     />
                 </div>
