@@ -40,11 +40,19 @@ export const createOrder = async (req, res) => {
             return res.status(400).json({ message: "Cart is empty" })
         }
 
+        const productIds = user.cart.map((cartItem) => cartItem.product);
+        const products = await product
+            .find({ _id: { $in: productIds } })
+            .select("name price image stock");
+        const productsById = new Map(
+            products.map((productData) => [productData._id.toString(), productData])
+        );
+
         const orderItems = [];
         let totalAmount = 0;
 
         for (const cartItem of user.cart) {
-            const productData = await product.findById(cartItem.product)
+            const productData = productsById.get(cartItem.product.toString());
 
             if (!productData) {
                 return res.status(400).json({ message: "Product no longer exists" });
