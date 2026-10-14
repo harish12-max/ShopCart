@@ -37,6 +37,19 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+// Log server-side request duration to help separate backend latency from frontend loading.
+app.use((req, res, next) => {
+    const startedAt = process.hrtime.bigint();
+
+    res.on("finish", () => {
+        const durationMs = Number(process.hrtime.bigint() - startedAt) / 1e6;
+        console.log(
+            `[HTTP] ${req.method} ${req.path} ${res.statusCode} ${durationMs.toFixed(1)}ms`
+        );
+    });
+
+    next();
+});
 
 app.get("/health", (req, res) => {
     res.status(200).json({
