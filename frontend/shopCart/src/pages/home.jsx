@@ -18,7 +18,7 @@ function Home() {
     useEffect(() => {
         const fetchFeaturedProducts = async () => {
             try {
-                const response = await axiosInstance.get("/product/products");
+                const response = await axiosInstance.get("/product/products", { params: { limit: 6 } });
                 setFeaturedProducts(response.data.prods.slice(0, 6));
             } catch (error) {
                 console.log(error);
